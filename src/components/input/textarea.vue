@@ -3,12 +3,12 @@
     <label
       for="password"
       class="mb-1 font-medium text-gray-500 flex justify-start" :class="error?'text-[red]':''"
-      >{{ placeholder }}</label
+      >{{ label }}</label
     >
     <textarea
       id="password"
       v-model="inputVal"
-      placeholder="Qisqacha malumot kiriting..."
+      :placeholder="placeholder"
       :class="[error ? '!border-[red]' : 'border-gray-500  focus-within:border-[blue]',customClass]"
       class="shadow-sm bg-gray-50 border text-gray-900 outline-0 text-sm rounded-[6px] resize-none h-[140px]  block w-full p-2.5 "
     >
@@ -33,8 +33,11 @@ const props = defineProps({
     customClass:{
       type:String,
     },
-
-  placeholder: {
+placeholder:{
+      type:String,
+    default:'Savol matnini kiriting..'
+},
+  label: {
     type: String,
   },
 });

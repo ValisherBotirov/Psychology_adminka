@@ -2,12 +2,12 @@ Code
 <template>
   <div class="">
    <div :class=" avatar ?  'flex flex-col-reverse' : 'text-left'" class="">
-       <label class="block mt-2 text-sm font-medium text-gray-900 mb-2" :class="error?'text-[red]':''"
+       <label class="block  text-sm font-medium text-gray-900 mb-2" :class="error?'text-[red]':''"
        >Rasm yuklash</label
        >
        <div
                v-if="line"
-               class="max-w-[300px] min-h-[170px] h-[170px] w-full flex items-center justify-center rounded-[10px] relative border border-dashed !border-black image-upload"
+               class=" min-h-[90px] h-[90px] w-full flex items-center justify-center rounded-[10px] relative border border-dashed !border-black image-upload"
                :class="[
         {
           'border-2 border-dashed border-[#E9ECF0]': !image.url,
