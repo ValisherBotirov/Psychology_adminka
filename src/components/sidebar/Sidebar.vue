@@ -56,11 +56,11 @@
           <RouterLink
                   class="flex items-center px-6 py-2 mt-4 text-gray-500 hover:bg-gray-700 hover:bg-opacity-25 hover:text-gray-100"
                   :class="
-          route.path.includes('/tests')
+          route.path.includes('/test')
             ? 'text-gray-100 bg-opacity-25 bg-gray-700'
             : 'text-gray-500'
         "
-                  to="/tests"
+                  to="/test/one"
           >
               <svg
                       class="w-6 h-6"

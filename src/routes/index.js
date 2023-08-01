@@ -20,10 +20,24 @@ const routes = [
     meta: { layout: 'login'  }
   },
   {
-    path: "/tests",
+    path: "/test",
     name: "TestCreate",
     component: (()=> import('@/view/tests/CreateTest.vue')),
-    meta: { roles: ['ADMIN'] }
+    meta: { roles: ['ADMIN'] },
+    children:[
+      {
+        path :'one',
+        component:(()=>import('@/view/tests/OneTest.vue'))
+      },
+      {
+        path:'more',
+        component:(()=> import('@/view/tests/MoreTest.vue'))
+      },
+      {
+        path: 'close',
+        component:(()=>import('@/view/tests/ClosedTest.vue'))
+      }
+    ]
   },
   // profile vue
   {
