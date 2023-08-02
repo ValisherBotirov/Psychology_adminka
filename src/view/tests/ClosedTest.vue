@@ -1,5 +1,55 @@
 <template>
-  <div>
-      yopiq testlar
-  </div>
+    <div>
+        <div class="border border-gray-600 py-4 px-5 bg-white">
+            <div class="flex gap-6">
+                <Textarea custom-class="h-[90px]" label="Savolni matnini kiriting" class="w-full"/>
+                <UploadImages  line class="w-full" label="Savol rasmini yuklash (ixtiyoriy)" @getBase64="getQuestionImages" />
+            </div>
+            <FormInput placeholder="Javobni kiriting" label="Yoziladigan javobni kiriting" custom-class="py-[10px]" class="mt-4" v-model="form.answer" :error="$v.answer.$error"/>
+            <div class="flex justify-end mt-6 ">
+                <SButton variant="secondary" @click="onSubmit">Saqlash</SButton>
+            </div>
+        </div>
+    </div>
 </template>
+
+<script setup lang="ts">
+import SButton from "@/components/buttons/SButton.vue";
+import Textarea from "@/components/input/textarea.vue";
+import UploadImages from "@/components/input/uploadImages.vue";
+import {ref} from "@vue/runtime-core";
+import {useToast} from "vue-toastification";
+import FormInput from "@/components/input/FormInput.vue";
+import {computed, reactive} from "vue";
+import {required} from "@vuelidate/validators";
+import {useVuelidate} from "@vuelidate/core";
+
+const toast = useToast()
+
+const form = reactive({
+    questions : "",
+    answer:""
+})
+
+const rule = computed(()=> {
+    return{
+        answer:{required}
+    }
+})
+
+const $v = useVuelidate(rule,form)
+
+const questionImage = ref("")
+function getQuestionImages(e){
+    questionImage.value = e
+    console.log(e,"emit")
+}
+
+function onSubmit(){
+    $v.value.$validate()
+    if(!$v.value.$error){
+        console.log("ishladi")
+    }
+}
+
+</script>

@@ -1,6 +1,5 @@
 <template>
   <div>
-      Bittalik testlar
       <div class="border border-gray-600 py-4 px-5 bg-white">
           <div class="flex gap-6">
           <Textarea custom-class="h-[90px]" label="Savolni matnini kiriting" class="w-full"/>
@@ -15,7 +14,7 @@
           <div class="grid grid-cols-2 gap-x-6 gap-y-3">
               <div class="flex gap-4 items-center " v-for="(item,index) in options" :key="index">
                   <div class="flex flex-col gap-2 items-center">
-                  <input id="teal-radio" type="radio" :value="item.id" v-model="item.correct"  name="colored-radio" class="w-5 h-5 ">
+                  <input id="teal-radio" type="radio" :value="item.id" v-model="item.correct"  name="colored-radio" class="w-5 h-5 cursor-pointer">
                   <i class="fa-solid fa-trash text-lg text-red-600 cursor-pointer" @click="deleteOption(item.id)"></i>
                   </div>
                   <div class="w-full flex flex-col gap-2">
@@ -36,6 +35,9 @@ import SButton from "@/components/buttons/SButton.vue";
 import Textarea from "@/components/input/textarea.vue";
 import UploadImages from "@/components/input/uploadImages.vue";
 import {ref} from "@vue/runtime-core";
+import {useToast} from "vue-toastification";
+
+const toast = useToast()
 
 const options = ref(
     [
@@ -81,14 +83,13 @@ function getQuestionImages(e){
     console.log(e,"emit")
 }
 
-const optionImages = ref()
-function getOptionImages(e){
-    optionImages.value = e
-}
-
 function onSubmit(){
-    console.log("ishladi")
     console.log(options,"opt")
+    const check = options.value.some((el)=>el.correct !== null)
+    if(!check){
+        toast.error('Iltimos bitta to\'g\'ri javobni belgilang')
+    }
+    console.log(check)
 }
 
 </script>
