@@ -1,13 +1,14 @@
 Code
 <template>
   <div class="">
+
    <div :class=" avatar ?  'flex flex-col-reverse' : 'text-left'" class="">
-       <label class="block  text-sm font-medium text-gray-900 mb-2" :class="error?'text-[red]':''"
-       >Rasm yuklash</label
+       <label v-if="label" class="block  text-sm font-medium text-gray-500 mb-2" :class="error?'text-[red]':''"
+       >{{ label }}</label
        >
        <div
                v-if="line"
-               class=" min-h-[90px] h-[90px] w-full flex items-center justify-center rounded-[10px] relative border border-dashed !border-black image-upload"
+               class=" min-h-[90px] h-[90px] w-full flex items-center justify-center rounded-[10px] relative border border-dashed !border-gray-500 image-upload"
                :class="[
         {
           'border-2 border-dashed border-[#E9ECF0]': !image.url,
@@ -16,7 +17,7 @@ Code
       ]"
        >
            <input
-                   id="file"
+                   :id="inputId"
                    type="file"
                    name="file"
                    class="w-0 h-0 absolute"
@@ -98,10 +99,10 @@ Code
            </div>
 
        </div>
-       <div v-else-if="small" class="p-3 bg-white rounded-[4px]  relative" :class="error ? 'border border-[red]' : ''">
+       <div v-else-if="small" class="p-3 bg-white rounded-[4px] border border-gray-500 h-[60px] relative" :class="error ? 'border border-[red]' : ''">
            <input
                    accept="image/png image/jpeg, image/*"
-                   id="file"
+                   :id="inputId"
                    type="file"
                    name="file"
                    class="w-0 h-0 absolute"
@@ -151,10 +152,11 @@ interface Props {
   small: boolean;
   error: boolean;
   desc: string;
-  image: string;
+  img: string;
   avatar:boolean;
   line:boolean;
-  label:string
+  label:string;
+  inputId :string
 }
 const props = withDefaults(defineProps<Props>(), {
   item: "",
@@ -163,10 +165,11 @@ const props = withDefaults(defineProps<Props>(), {
     line:false,
   error: false,
   desc: "Upload images",
-    label:""
+    label:"",
+    inputId:'file'
 });
 const image = reactive({
-  url: props?.image,
+  url: props?.img,
   file: null,
 });
 
@@ -180,13 +183,13 @@ const handleFile = (event: any) => {
     reader.readAsDataURL(event.target.files[0]);
     reader.onload = (e) => {
       image.url = e.target?.result;
-        emit("getBase64",reader.result)
+        emit("getBase64",e.target?.result)
     };
     send();
   }
 };
 const getFile = () => {
-  const input = document.getElementById("file");
+  const input = document.getElementById(props.inputId);
   input?.click();
 };
 const removeImage = () => {
