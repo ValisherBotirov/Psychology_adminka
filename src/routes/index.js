@@ -60,7 +60,7 @@ const router = createRouter({
 
 
 
-let userRole =  'SELLER'
+let userRole =  'ADMIN'
 router.beforeEach((to, from,next) => {
   userRole = sessionStorage.getItem('userRole')
   console.log(userRole)

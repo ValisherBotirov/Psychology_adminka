@@ -1,16 +1,19 @@
 <template>
-  <div>
+  <div class="transition duration-500">
       <div class="border border-gray-600 py-4 px-5 bg-white">
           <div class="flex gap-6">
           <Textarea custom-class="h-[90px]" label="Savolni matnini kiriting" class="w-full"/>
           <UploadImages  line class="w-full" label="Savol rasmini yuklash (ixtiyoriy)" @getBase64="getQuestionImages" />
           </div>
-            <div class="flex gap-2 cursor-pointer group my-3" @click="addNewOption">
-                <div class="w-4 h-4 border border-blue-600 flex justify-center items-center rounded-[50%]  cursor-pointer p-3">
-                    <i class="fa-solid fa-plus text-red-400"></i>
-                </div>
-                <p class="text-black transition group-hover:text-blue-700 select-none">Yangi test varianti qo'shish</p>
-            </div>
+          <div class="flex items-end gap-10 my-4 ">
+              <div class="flex gap-2 cursor-pointer group mb-2 w-full" @click="addNewOption">
+                  <div class="w-4 h-4 border border-blue-600 flex justify-center items-center rounded-[50%]  cursor-pointer p-3">
+                      <i class="fa-solid fa-plus text-red-400"></i>
+                  </div>
+                  <p class="text-black transition group-hover:text-blue-700 select-none">Yangi test varianti qo'shish</p>
+              </div>
+              <FormInput placeholder="0" custom-class="py-2" label="Savol uchun ball belgilang" class="w-full"/>
+          </div>
           <div class="grid grid-cols-2 gap-x-6 gap-y-3">
               <div class="flex gap-4 items-center " v-for="(item,index) in options" :key="index">
                   <div class="flex flex-col gap-2 items-center">
@@ -36,6 +39,7 @@ import Textarea from "@/components/input/textarea.vue";
 import UploadImages from "@/components/input/uploadImages.vue";
 import {ref} from "@vue/runtime-core";
 import {useToast} from "vue-toastification";
+import FormInput from "@/components/input/FormInput.vue";
 
 const toast = useToast()
 

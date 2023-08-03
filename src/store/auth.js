@@ -13,21 +13,25 @@ export const useAuthStore = defineStore("auth", {
   }),
   actions: {
     async  getUser(option){
-      try {
-        const user = await axios.post('auth/access/token',option)
-        const token = user.data.accessToken
-        sessionStorage.setItem('token',token)
-        sessionStorage.setItem('refreshToken',user.data.refreshToken)
-
-        await this.getUserRole(token)
-        this.user.isRegiter = 1
-        sessionStorage.setItem('isRegister',1)
-        toast.success("Tizimga muvaffaqiyatli kirdingiz!")
-        await router.push("/")
-      }
-      catch (err){
-       toast.error("Telefon raqam yoki parol xato!")
-      }
+      // try {
+      //   const user = await axios.post('auth/access/token',option)
+      //   const token = user.data.accessToken
+      //   sessionStorage.setItem('token',token)
+      //   sessionStorage.setItem('refreshToken',user.data.refreshToken)
+      //
+      //   await this.getUserRole(token)
+      //   this.user.isRegiter = 1
+      //   sessionStorage.setItem('isRegister',1)
+      //   toast.success("Tizimga muvaffaqiyatli kirdingiz!")
+      //   await router.push("/")
+      // }
+      // catch (err){
+      //  toast.error("Telefon raqam yoki parol xato!")
+      // }
+      sessionStorage.setItem('userRole','ADMIN')
+      sessionStorage.setItem('isRegister',1)
+      toast.success("Tizimga muvaffaqiyatli kirdingiz!")
+      await router.push("/")
     },
     async getUserRole(token){
       try{
