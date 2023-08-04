@@ -20,6 +20,12 @@ const routes = [
     meta: { layout: 'login'  }
   },
   {
+    path:"/list",
+    name:"TestsList",
+    component: (()=> import('@/view/tests/TestsList.vue')),
+    meta:{roles: ['ADMIN']}
+  },
+  {
     path: "/test",
     name: "TestCreate",
     component: (()=> import('@/view/tests/CreateTest.vue')),

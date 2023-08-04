@@ -52,7 +52,19 @@
               </svg>
               <span class="mx-3">Bosh sahifa</span>
           </RouterLink>
+          <RouterLink
+                  class="flex items-center px-6 py-2 mt-4 text-gray-500 hover:bg-gray-700 hover:bg-opacity-25 hover:text-gray-100"
+                  :class="
+          route.path.includes('/list')
+            ? 'text-gray-100 bg-opacity-25 bg-gray-700'
+            : 'text-gray-500'
+        "
+                  to="/list"
+          >
+              <i class="fa-solid fa-circle-question text-xl"></i>
 
+              <span class="mx-3">Testlar listi</span>
+          </RouterLink>
           <RouterLink
                   class="flex items-center px-6 py-2 mt-4 text-gray-500 hover:bg-gray-700 hover:bg-opacity-25 hover:text-gray-100"
                   :class="

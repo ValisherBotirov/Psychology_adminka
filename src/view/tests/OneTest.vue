@@ -2,7 +2,7 @@
   <div class="transition duration-500">
       <div class="border border-gray-600 py-4 px-5 bg-white">
           <div class="flex gap-6">
-          <Textarea custom-class="h-[90px]" label="Savolni matnini kiriting" class="w-full"/>
+          <Textarea custom-class="h-[90px]" label="Savolni matnini kiriting" class="w-full" v-model="form.title"/>
           <UploadImages  line class="w-full" label="Savol rasmini yuklash (ixtiyoriy)" @getBase64="getQuestionImages" />
           </div>
           <div class="flex items-end gap-10 my-4 ">
@@ -12,10 +12,10 @@
                   </div>
                   <p class="text-black transition group-hover:text-blue-700 select-none">Yangi test varianti qo'shish</p>
               </div>
-              <FormInput placeholder="0" custom-class="py-2" label="Savol uchun ball belgilang" class="w-full"/>
+              <FormInput placeholder="0" custom-class="py-2" label="Savol uchun ball belgilang" class="w-full" v-model="form.score"/>
           </div>
           <div class="grid grid-cols-2 gap-x-6 gap-y-3">
-              <div class="flex gap-4 items-center " v-for="(item,index) in options" :key="index">
+              <div class="flex gap-4 items-center " v-for="(item,index) in form.answerCreateDTOList" :key="index">
                   <div class="flex flex-col gap-2 items-center">
                   <input id="teal-radio" type="radio" :value="item.id" v-model="item.correct"  name="colored-radio" class="w-5 h-5 cursor-pointer">
                   <i class="fa-solid fa-trash text-lg text-red-600 cursor-pointer" @click="deleteOption(item.id)"></i>
@@ -40,14 +40,18 @@ import UploadImages from "@/components/input/uploadImages.vue";
 import {ref} from "@vue/runtime-core";
 import {useToast} from "vue-toastification";
 import FormInput from "@/components/input/FormInput.vue";
+import {reactive} from "vue";
 
 const toast = useToast()
 
-const options = ref(
-    [
+const form = reactive({
+    testType:'SINGLE_CHOICE',
+    title:"",
+    score:"",
+    answerCreateDTOList:[
         {
             id:1,
-            optionText :"",
+            optionText :"salom",
             correct:null,
             image:""
         },
@@ -64,20 +68,21 @@ const options = ref(
             image:"https://avatars.githubusercontent.com/u/94363665?v=4"
         }
     ]
-)
+})
+
 
 function addNewOption(){
     const option = {
-        id:options.value.length+1,
+        id:form.answerCreateDTOList.length+1,
         optionText:"",
         correct:null,
         image:''
     }
-    options.value.push(option)
+    form.answerCreateDTOList.push(option)
 }
 
 function deleteOption(id){
-    options.value = options.value.filter((el)=>el.id !== id)
+    form.answerCreateDTOList = form.answerCreateDTOList.filter((el)=>el.id !== id)
 }
 // work images input
 
@@ -88,8 +93,8 @@ function getQuestionImages(e){
 }
 
 function onSubmit(){
-    console.log(options,"opt")
-    const check = options.value.some((el)=>el.correct !== null)
+    console.log(form.answerCreateDTOList,"opt")
+    const check = form.answerCreateDTOList.some((el)=>el.correct !== null)
     if(!check){
         toast.error('Iltimos bitta to\'g\'ri javobni belgilang')
     }

@@ -2,7 +2,9 @@
   <div>
     <div class="flex justify-between items-center mb-4">
       <h3 class="text-gray-700 text-3xl font-medium text-center">Test qo'shish </h3>
-        <SButton variant="info">Testlar bo'limiga o'tish</SButton>
+        <router-link to="/list">
+        <SButton variant="info"> Testlar bo'limiga o'tish</SButton>
+        </router-link>
     </div>
       <div class="mt-5 flex gap-4 text-white  max-w-[900px] py-3 mx-auto justify-around">
           <router-link to="/test/one" class="bg-blue-500 py-3 px-4 transition duration-500" :active-class="'bg-blue-800'">Bir to'g'ri javobli test qo'shish</router-link>
