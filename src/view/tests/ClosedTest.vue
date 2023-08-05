@@ -10,7 +10,7 @@
                 <FormInput placeholder="0" custom-class="py-[10px]" label="Savol uchun ball belgilang" class="w-full" v-model="form.score" :error="$v.score.$error"/>
             </div>
             <div class="flex justify-end mt-6 ">
-                <SButton variant="secondary" @click="onSubmit">Saqlash</SButton>
+                <SButton variant="secondary" class="w-[250px]" @click="onSubmit">Saqlash</SButton>
             </div>
         </div>
     </div>

@@ -1,6 +1,10 @@
 <template>
   <div class="transition duration-500">
       <div class="border border-gray-600 py-4 px-5 bg-white">
+          <div class="flex items-center gap-4 mt-1 mb-4" v-if="!routeId">
+              <SingleSelect v-model="form.categoryValue" placeholder="Kategoriyani tanlang" :data="categoryData" :error="$v.categoryValue.$error"  class="w-full" />
+              <SingleSelect v-model="form.subcategoryValue" placeholder="Test nomini tanlang" :data="subcategoryData" :error="$v.subcategoryValue.$error" class="w-full"/>
+          </div>
           <div class="flex gap-6">
           <Textarea custom-class="h-[90px]" label="Savolni matnini kiriting" class="w-full" v-model="form.title"/>
           <UploadImages  line class="w-full" label="Savol rasmini yuklash (ixtiyoriy)" @getBase64="getQuestionImages" />
@@ -27,7 +31,7 @@
               </div>
           </div>
           <div class="flex justify-end mt-4 ">
-          <SButton variant="secondary" @click="onSubmit">Saqlash</SButton>
+              <SButton variant="secondary" class="w-[250px]" @click="onSubmit">Saqlash</SButton>
           </div>
       </div>
   </div>
@@ -40,13 +44,58 @@ import UploadImages from "@/components/input/uploadImages.vue";
 import {ref} from "@vue/runtime-core";
 import {useToast} from "vue-toastification";
 import FormInput from "@/components/input/FormInput.vue";
-import {reactive} from "vue";
+import {computed, reactive} from "vue";
+import SingleSelect from "@/components/select/SingleSelect.vue";
+import {required} from "@vuelidate/validators";
+import {useVuelidate} from "@vuelidate/core";
+import {useRoute} from "vue-router";
 
 const toast = useToast()
+
+const route = useRoute()
+
+const categoryData = [
+    {
+        value:"child",
+        label:"Bolalar uchun"
+    },
+    {
+        value: "child2",
+        label:"16 yoshdan kattalar uchun"
+    },
+    {
+        value: "child3",
+        label: "Kattalar uchun"
+    }
+]
+
+const subcategoryData = [
+    {
+        value:"sub",
+        label:"Birinchi test"
+    },
+    {
+        value: "sub2",
+        label:"Ikkinchi test"
+    },
+    {
+        value: "sub3",
+        label: "Uchunchi test"
+    },
+    {
+        value: "sub4",
+        label: "To'rtinchi test"
+    },
+]
+
+const routeId = route.query.id
+
 
 const form = reactive({
     testType:'SINGLE_CHOICE',
     title:"",
+    categoryValue:"",
+    subcategoryValue:"",
     score:"",
     answerCreateDTOList:[
         {
@@ -58,7 +107,7 @@ const form = reactive({
         {
             id:2,
             optionText :"",
-            correct:null,
+            correct:2,
             image:""
         },
         {
@@ -68,8 +117,17 @@ const form = reactive({
             image:"https://avatars.githubusercontent.com/u/94363665?v=4"
         }
     ]
+
 })
 
+const rule =computed(()=>{
+    return{
+        categoryValue:{required},
+        subcategoryValue:{required}
+    }
+})
+
+const $v = useVuelidate(rule,form)
 
 function addNewOption(){
     const option = {
@@ -93,12 +151,19 @@ function getQuestionImages(e){
 }
 
 function onSubmit(){
-    console.log(form.answerCreateDTOList,"opt")
-    const check = form.answerCreateDTOList.some((el)=>el.correct !== null)
-    if(!check){
-        toast.error('Iltimos bitta to\'g\'ri javobni belgilang')
+    if(!routeId){
+        $v.value.$validate()
     }
-    console.log(check)
+    if(!$v.value.$error){
+        console.log(form.answerCreateDTOList,"opt")
+        const check = form.answerCreateDTOList.some((el)=>el.correct !== null)
+        if(!check){
+            toast.error('Iltimos bitta to\'g\'ri javobni belgilang')
+        }
+        console.log(check)
+    }
+
 }
+
 
 </script>

@@ -27,7 +27,7 @@
                 </div>
             </div>
             <div class="flex justify-end mt-4 ">
-                <SButton variant="secondary" @click="onSubmit">Saqlash</SButton>
+                <SButton variant="secondary" class="w-[250px]" @click="onSubmit">Saqlash</SButton>
             </div>
         </div>
     </div>
