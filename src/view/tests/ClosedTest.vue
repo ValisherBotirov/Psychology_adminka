@@ -1,6 +1,10 @@
 <template>
     <div>
         <div class="border border-gray-600 py-4 px-5 bg-white">
+            <div class="flex items-center gap-4 mt-1 mb-4" v-if="!routeId">
+                <SingleSelect v-model="form.categoryValue" placeholder="Kategoriyani tanlang" :data="categoryData" :error="$v.categoryValue.$error"  class="w-full" />
+                <SingleSelect v-model="form.subcategoryValue" placeholder="Test nomini tanlang" :data="subcategoryData" :error="$v.subcategoryValue.$error" class="w-full"/>
+            </div>
             <div class="flex gap-6">
                 <Textarea custom-class="h-[90px]" label="Savolni matnini kiriting" class="w-full"/>
                 <UploadImages  line class="w-full" label="Savol rasmini yuklash (ixtiyoriy)" @getBase64="getQuestionImages" />
@@ -26,10 +30,53 @@ import FormInput from "@/components/input/FormInput.vue";
 import {computed, reactive} from "vue";
 import {required} from "@vuelidate/validators";
 import {useVuelidate} from "@vuelidate/core";
+import SingleSelect from "@/components/select/SingleSelect.vue";
+import {useRoute} from "vue-router";
 
 const toast = useToast()
+const route = useRoute()
+
+const categoryData = [
+    {
+        value:"child",
+        label:"Bolalar uchun"
+    },
+    {
+        value: "child2",
+        label:"16 yoshdan kattalar uchun"
+    },
+    {
+        value: "child3",
+        label: "Kattalar uchun"
+    }
+]
+
+const subcategoryData = [
+    {
+        value:"sub",
+        label:"Birinchi test"
+    },
+    {
+        value: "sub2",
+        label:"Ikkinchi test"
+    },
+    {
+        value: "sub3",
+        label: "Uchunchi test"
+    },
+    {
+        value: "sub4",
+        label: "To'rtinchi test"
+    },
+]
+
+const routeId = route.query.id
 
 const form = reactive({
+    testType:'SINGLE_CHOICE',
+    title:"",
+    categoryValue:"",
+    subcategoryValue:"",
     questions : "",
     answer:"",
     score:null
@@ -38,7 +85,9 @@ const form = reactive({
 const rule = computed(()=> {
     return{
         answer:{required},
-        score:{required}
+        score:{required},
+        categoryValue:{required},
+        subcategoryValue:{required}
     }
 })
 
@@ -51,9 +100,12 @@ function getQuestionImages(e){
 }
 
 function onSubmit(){
-    $v.value.$validate()
+    if(!routeId){
+        $v.value.$validate()
+    }
     if(!$v.value.$error){
-        console.log("ishladi")
+        console.log(form,"opt")
+
     }
 }
 
