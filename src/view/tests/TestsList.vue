@@ -63,8 +63,11 @@ import DeleteModal from "@/components/modal/DeleteModal.vue";
 
 import {ref} from "vue";
 import {useToast} from "vue-toastification";
+import {useRoute, useRouter} from "vue-router";
 
 const toast = useToast()
+const router = useRouter()
+const route = useRoute()
 
 const openDeleteModal = ref(false)
 
@@ -140,9 +143,19 @@ const data = [
 
 
 function editTest(item){
+    console.log(item)
     switch(item.type){
-        case 'SINGLE_CHOICE' :
+        case 'SINGLE_CHOICE' : navigateRouter('one',item.id);break;
+        case 'MULTI_CHOICE' : navigateRouter('more',item.id);break;
+        case 'WRITE_CHOICE' : navigateRouter('close',item.id);break;
     }
+}
+function navigateRouter(url,id){
+    // router.push(`/test/${url}`)
+    router.replace({
+        path:`/test/${url}`,
+        query : {id}
+    })
 }
 
 const itemId = ref("")
