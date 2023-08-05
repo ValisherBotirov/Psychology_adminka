@@ -26,6 +26,12 @@ const routes = [
     meta:{roles: ['ADMIN']}
   },
   {
+    path:"/category",
+    name:"Category",
+    component: (()=>import('@/view/category/Category.vue')),
+    meta:{roles: ['ADMIN']}
+  },
+  {
     path: "/test",
     name: "TestCreate",
     component: (()=> import('@/view/tests/CreateTest.vue')),
@@ -69,7 +75,6 @@ const router = createRouter({
 let userRole =  'ADMIN'
 router.beforeEach((to, from,next) => {
   userRole = sessionStorage.getItem('userRole')
-  console.log(userRole)
   const isAuthenticated = Number(sessionStorage.getItem("isRegister")) ? Number(sessionStorage.getItem("isRegister")) :0  ;
   if(!isAuthenticated){
     if (to.name !== 'Login' && !isAuthenticated) {

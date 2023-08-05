@@ -3,7 +3,7 @@
       <div class="flex justify-between items-center mb-4">
           <h3 class="text-gray-700 text-3xl font-medium text-center">Testlar bo'limi </h3>
           <router-link to="/test/one">
-              <SButton variant="info"> Testlar bo'limiga o'tish</SButton>
+              <SButton variant="info"> Yangi test qo'shish</SButton>
           </router-link>
       </div>
       <div class="flex items-center gap-4 mt-4">

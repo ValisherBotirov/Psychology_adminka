@@ -14,7 +14,7 @@
 
       <div class="mt-4">
           <transition name="fade">
-              <router-view :category="categoryValue" :childCategory="subcategoryValue"></router-view>
+              <router-view></router-view>
           </transition>
       </div>
 
