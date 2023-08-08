@@ -144,7 +144,6 @@ function deleteOption(id){
 
 const questionImage = ref("")
 function getQuestionImages(e){
-    questionImage.value = e
     console.log(e,"emit")
 }
 

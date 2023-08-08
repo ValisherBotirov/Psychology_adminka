@@ -21,102 +21,114 @@
 
     <nav class="mt-10">
       <div>
-          <RouterLink
-                  class="flex items-center px-6 py-2 mt-4 text-gray-500 hover:bg-gray-700 hover:bg-opacity-25 hover:text-gray-500"
-                  :class="
-          route.path === '/'
-            ? 'text-gray-100 bg-opacity-25 bg-gray-700'
-            : 'text-gray-500'
-        "
-                  to="/"
+        <RouterLink
+          class="flex items-center px-6 py-2 mt-4 text-gray-500 hover:bg-gray-700 hover:bg-opacity-25 hover:text-gray-500"
+          :class="
+            route.path === '/'
+              ? 'text-gray-100 bg-opacity-25 bg-gray-700'
+              : 'text-gray-500'
+          "
+          to="/"
+        >
+          <svg
+            class="w-6 h-6"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
           >
-              <svg
-                      class="w-6 h-6"
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-              >
-                  <path
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          stroke-width="2"
-                          d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"
-                  />
-                  <path
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          stroke-width="2"
-                          d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"
-                  />
-              </svg>
-              <span class="mx-3">Bosh sahifa</span>
-          </RouterLink>
-          <RouterLink
-                  class="flex items-center px-6 py-2 mt-4 text-gray-500 hover:bg-gray-700 hover:bg-opacity-25 hover:text-gray-100"
-                  :class="
-          route.path.includes('/category')
-            ? 'text-gray-100 bg-opacity-25 bg-gray-700'
-            : 'text-gray-500'
-        "
-                  to="/category"
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"
+            />
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"
+            />
+          </svg>
+          <span class="mx-3">Bosh sahifa</span>
+        </RouterLink>
+        <RouterLink
+          class="flex items-center px-6 py-2 mt-4 text-gray-500 hover:bg-gray-700 hover:bg-opacity-25 hover:text-gray-100"
+          :class="
+            route.path.includes('/category')
+              ? 'text-gray-100 bg-opacity-25 bg-gray-700'
+              : 'text-gray-500'
+          "
+          to="/category"
+        >
+          <svg
+            class="w-6 h-6"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
           >
-              <svg
-                      class="w-6 h-6"
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-              >
-                  <path
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          stroke-width="2"
-                          d="M17 14v6m-3-3h6M6 10h2a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v2a2 2 0 002 2zm10 0h2a2 2 0 002-2V6a2 2 0 00-2-2h-2a2 2 0 00-2 2v2a2 2 0 002 2zM6 20h2a2 2 0 002-2v-2a2 2 0 00-2-2H6a2 2 0 00-2 2v2a2 2 0 002 2z"
-                  />
-              </svg>
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M17 14v6m-3-3h6M6 10h2a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v2a2 2 0 002 2zm10 0h2a2 2 0 002-2V6a2 2 0 00-2-2h-2a2 2 0 00-2 2v2a2 2 0 002 2zM6 20h2a2 2 0 002-2v-2a2 2 0 00-2-2H6a2 2 0 00-2 2v2a2 2 0 002 2z"
+            />
+          </svg>
 
-              <span class="mx-3">Kategoriya qo'shish</span>
-          </RouterLink>
-          <RouterLink
-                  class="flex items-center px-6 py-2 mt-4 text-gray-500 hover:bg-gray-700 hover:bg-opacity-25 hover:text-gray-100"
-                  :class="
-          route.path.includes('/list')
-            ? 'text-gray-100 bg-opacity-25 bg-gray-700'
-            : 'text-gray-500'
-        "
-                  to="/list"
-          >
-              <i class="fa-solid fa-circle-question text-xl"></i>
+          <span class="mx-3">Kategoriya qo'shish</span>
+        </RouterLink>
+        <RouterLink
+          class="flex items-center px-6 py-2 mt-4 text-gray-500 hover:bg-gray-700 hover:bg-opacity-25 hover:text-gray-100"
+          :class="
+            route.path.includes('/list')
+              ? 'text-gray-100 bg-opacity-25 bg-gray-700'
+              : 'text-gray-500'
+          "
+          to="/list"
+        >
+          <i class="fa-solid fa-circle-question text-xl"></i>
 
-              <span class="mx-3">Testlar listi</span>
-          </RouterLink>
-          <RouterLink
-                  class="flex items-center px-6 py-2 mt-4 text-gray-500 hover:bg-gray-700 hover:bg-opacity-25 hover:text-gray-100"
-                  :class="
-          route.path.includes('/test')
-            ? 'text-gray-100 bg-opacity-25 bg-gray-700'
-            : 'text-gray-500'
-        "
-                  to="/test/one"
+          <span class="mx-3">Testlar listi</span>
+        </RouterLink>
+        <RouterLink
+          class="flex items-center px-6 py-2 mt-4 text-gray-500 hover:bg-gray-700 hover:bg-opacity-25 hover:text-gray-100"
+          :class="
+            route.path.includes('/test')
+              ? 'text-gray-100 bg-opacity-25 bg-gray-700'
+              : 'text-gray-500'
+          "
+          to="/test/one"
+        >
+          <svg
+            class="w-6 h-6"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
           >
-              <svg
-                      class="w-6 h-6"
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-              >
-                  <path
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          stroke-width="2"
-                          d="M17 14v6m-3-3h6M6 10h2a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v2a2 2 0 002 2zm10 0h2a2 2 0 002-2V6a2 2 0 00-2-2h-2a2 2 0 00-2 2v2a2 2 0 002 2zM6 20h2a2 2 0 002-2v-2a2 2 0 00-2-2H6a2 2 0 00-2 2v2a2 2 0 002 2z"
-                  />
-              </svg>
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M17 14v6m-3-3h6M6 10h2a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v2a2 2 0 002 2zm10 0h2a2 2 0 002-2V6a2 2 0 00-2-2h-2a2 2 0 00-2 2v2a2 2 0 002 2zM6 20h2a2 2 0 002-2v-2a2 2 0 00-2-2H6a2 2 0 00-2 2v2a2 2 0 002 2z"
+            />
+          </svg>
 
-              <span class="mx-3">Test qo'shish</span>
-          </RouterLink>
+          <span class="mx-3">Test qo'shish</span>
+        </RouterLink>
+        <RouterLink
+          class="flex items-center px-6 py-2 mt-4 text-gray-500 hover:bg-gray-700 hover:bg-opacity-25 hover:text-gray-100"
+          :class="
+            route.path.includes('/site-data')
+              ? 'text-gray-100 bg-opacity-25 bg-gray-700'
+              : 'text-gray-500'
+          "
+          to="/site-data"
+        >
+        <i class="fa-solid fa-folder-plus"></i>
+          <span class="mx-3">Boshqalar</span>
+        </RouterLink>
       </div>
     </nav>
   </div>
@@ -130,5 +142,5 @@ const route = useRoute();
 const emit = defineEmits(["closeSidebar"]);
 const props = defineProps(["sidebarOpen"]);
 // ADMIN, SELLER
-const userRole = sessionStorage.getItem('userRole')
+const userRole = sessionStorage.getItem("userRole");
 </script>
