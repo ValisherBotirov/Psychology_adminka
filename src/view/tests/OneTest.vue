@@ -163,19 +163,16 @@ const form = reactive({
     {
       id: 1,
       optionText: "salom",
-      correct: null,
       image: "",
     },
     {
       id: 2,
       optionText: "",
-      correct: 2,
       image: "",
     },
     {
       id: 3,
       optionText: "",
-      correct: null,
       image: "https://avatars.githubusercontent.com/u/94363665?v=4",
     },
   ],
@@ -194,7 +191,6 @@ function addNewOption() {
   const option = {
     id: form.answerCreateDTOList.length + 1,
     optionText: "",
-    correct: null,
     image: "",
   };
   form.answerCreateDTOList.push(option);
