@@ -41,7 +41,7 @@
 import SButton from "@/components/buttons/SButton.vue";
 import Textarea from "@/components/input/textarea.vue";
 import UploadImages from "@/components/input/uploadImages.vue";
-import {ref} from "@vue/runtime-core";
+import {onMounted, ref} from "@vue/runtime-core";
 import {useToast} from "vue-toastification";
 import FormInput from "@/components/input/FormInput.vue";
 import SingleSelect from "@/components/select/SingleSelect.vue";
@@ -95,23 +95,24 @@ const form = reactive({
     categoryValue:"",
     subcategoryValue:"",
     score:"",
+    correctAnswers:[1,3],
     answerCreateDTOList:[
         {
             id:1,
             optionText :"salom",
-            correct:null,
+            correct:true,
             image:""
         },
         {
             id:2,
             optionText :"",
-            correct:2,
+            correct:false,
             image:""
         },
         {
             id:3,
             optionText :"",
-            correct:null,
+            correct:false,
             image:"https://avatars.githubusercontent.com/u/94363665?v=4"
         }
     ]
@@ -131,7 +132,7 @@ function addNewOption(){
     const option = {
         id:form.answerCreateDTOList.length+1,
         optionText:"",
-        correct:null,
+        correct:false,
         image:''
     }
     form.answerCreateDTOList.push(option)
@@ -153,13 +154,29 @@ function onSubmit(){
         $v.value.$validate()
     }
     if(!$v.value.$error){
-        console.log(form.answerCreateDTOList,"opt")
-        const check = form.answerCreateDTOList.some((el)=>el.correct !== null)
+        const check = form.answerCreateDTOList.some((el)=>el.correct !== false)
         if(!check){
             toast.error('Iltimos bitta to\'g\'ri javobni belgilang')
         }
-        console.log(check)
+
+        const correctArr = []
+
+        form.answerCreateDTOList.forEach((el)=>{
+            if(el.correct){
+                correctArr.push(el.id)
+            }
+        })
+
+        form.correctAnswers = correctArr
+
+        console.log(form,"opt")
     }
 }
+
+onMounted(()=>{
+    form.correctAnswers.forEach((id)=>{
+        form.answerCreateDTOList.find((el)=>el.id === id).correct = true
+    })
+})
 
 </script>

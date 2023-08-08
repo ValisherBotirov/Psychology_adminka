@@ -163,20 +163,20 @@ const form = reactive({
     {
       id: 1,
       optionText: "salom",
-      correct: null,
       image: "",
+        correct:false
     },
     {
       id: 2,
       optionText: "",
-      correct: 2,
       image: "",
+        correct:false
     },
     {
       id: 3,
       optionText: "",
-      correct: null,
       image: "https://avatars.githubusercontent.com/u/94363665?v=4",
+        correct:false
     },
   ],
 });
@@ -194,7 +194,7 @@ function addNewOption() {
   const option = {
     id: form.answerCreateDTOList.length + 1,
     optionText: "",
-    correct: null,
+    correct: false,
     image: "",
   };
   form.answerCreateDTOList.push(option);
@@ -219,7 +219,7 @@ function onSubmit() {
   }
   if (!$v.value.$error) {
     console.log(form, "opt");
-    const check = form.answerCreateDTOList.some((el) => el.correct !== null);
+    const check = form.answerCreateDTOList.some((el) => el.correct !== false);
     if (!check) {
       toast.error("Iltimos bitta to'g'ri javobni belgilang");
     }
