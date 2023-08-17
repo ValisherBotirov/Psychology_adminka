@@ -12,7 +12,7 @@ export const useCategoryStore = defineStore('categoryStore', {
             return new Promise((resolve, reject) => {
                 this.loading = true
                 axios
-                    .get('/category/all-details')
+                    .get('/category/get/all')
                     .then((res) => {
                         this.categories = res.data
                         resolve(res)
