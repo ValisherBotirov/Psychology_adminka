@@ -51,7 +51,7 @@
                     </th>
                     <td class="flex items-center px-6 py-4 space-x-4 justify-end">
                         <SButton variant="secondary" @click="openSubCategory(item)"
-                        >Subkategoriya qo'shish</SButton
+                        >Tets bo'limini qo'shish</SButton
                         >
                         <div
                                 @click="itemEdit(item)"
@@ -179,7 +179,6 @@ function addCategory() {
     $vCategory.value.$validate();
     if (!$vCategory.value.$error) {
         if (!isEdit.value) {
-
             axios
                 .post("/category", {name:formCategory.title})
                 .then((res) => {
@@ -254,7 +253,6 @@ const formSubcategory = reactive({
 const ruleSubcategory = reactive(() => {
     return {
         title: { required },
-
     };
 });
 
@@ -264,7 +262,7 @@ function openSubCategory(item) {
     openActionModal.value = true;
     formSubcategory.parentID = item.ID;
     fetchSubCategoryList(item.ID);
-    subCategoryList.value = item.children
+    subCategoryList.value = item.tests
 }
 
 function fetchSubCategoryList(id) {
