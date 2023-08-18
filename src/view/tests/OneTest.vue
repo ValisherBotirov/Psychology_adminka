@@ -3,10 +3,10 @@
         <div class="border border-gray-600 py-4 px-5 bg-white">
             <div class="flex items-center gap-4 mt-1 mb-4" v-if="!routeId">
                 <SingleSelect
-                        v-model="form.subcategoryValue"
+                        v-model="form.testID"
                         placeholder="Test nomini tanlang"
                         :data="subcategoryData"
-                        :error="$v.subcategoryValue.$error"
+                        :error="$v.testID.$error"
                         class="w-full"
                 />
             </div>
@@ -129,11 +129,10 @@ const form = reactive({
     testType: "CHECKBOX",
     title: "",
     imageID: null,
-    subcategoryValue: "",
+    testID: "",
     score: "",
     correct: null,
     correctAnswers:[],
-    testId:1,
     correctCloseAnswer: "",
     answerCreateDTOList: [
         {
@@ -153,7 +152,7 @@ const form = reactive({
 
 const rule = computed(() => {
     return {
-        subcategoryValue: {required},
+        testID: {required},
         score:{required}
     };
 });
@@ -202,12 +201,23 @@ function onSubmit() {
         $v.value.$validate();
     }
     if (!$v.value.$error) {
+        form.correctAnswers = [form.correct]
         console.log(form, "opt");
-        const check = form.answerCreateDTOList.some((el) => el.correct !== false);
-        if (!check) {
+        if (!form.correct) {
             toast.error("Iltimos bitta to'g'ri javobni belgilang");
         }
-        console.log(check);
+        else{
+            axios.post('/question',form).then((res)=>{
+                console.log(res)
+                toast.success("Test muvaffaqiyatli qo'shildi")
+            }).catch((err)=>{
+                toast.error("Qo'shishda xatolik yuz berdi!")
+            }).finally(()=>{
+                setTimeout(()=>{
+                    window.location.reload()
+                },1000)
+            })
+        }
     }
 }
 
