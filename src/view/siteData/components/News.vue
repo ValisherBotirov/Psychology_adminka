@@ -2,10 +2,10 @@
   <div class="bg-[#fff] p-8 rounded-md">
     <div class="flex justify-between items-center mb-4">
       <h3 class="text-gray-700 text-3xl font-medium text-center">
-        Hamkorlar bo'limi
+        Yangiliklar bo'limi
       </h3>
       <div @click="addPartnerBtn">
-        <SButton variant="info"> Hamkor qo'shish</SButton>
+        <SButton variant="info"> Yangilik qo'shish</SButton>
       </div>
     </div>
     <div class="flex justify-between gap-4 mt-4">
@@ -19,7 +19,6 @@
       <UploadImages
         ref="removeImg"
         :img="winnerData.image"
-        inputId="2"
         @getBase64="imageValu"
         line
         class="w-full"
@@ -31,8 +30,8 @@
       <thead class="text-xs text-gray-700 uppercase bg-gray-50">
         <tr>
           <th scope="col" class="p-4">#</th>
-          <th scope="col" class="px-6 py-3">Hamkor nomi</th>
-          <th scope="col" class="px-6 py-3">Hamkor logosi</th>
+          <th scope="col" class="px-6 py-3">Yangilik haqida</th>
+          <th scope="col" class="px-6 py-3">Yanglik rasmi</th>
           <th scope="col" class="px-6 py-3 text-end">Amallar</th>
         </tr>
       </thead>
@@ -54,16 +53,10 @@
             <img
               :src="item?.image"
               alt="image"
-              class="w-[60px] h-[60px] object-fill rounded-[50%]"
+              class="w-[200px] h-[80px] object-fill"
             />
           </th>
           <td class="flex items-center px-6 py-4 space-x-4 justify-end">
-            <div class="cursor-pointer hover:text-blue-700 font-medium"></div>
-            <div
-              class="font-medium text-blue-600 hover:underline cursor-pointer"
-            >
-              <i class="fa-solid fa-pen-to-square text-[blue] text-[20px]"></i>
-            </div>
             <div
               class="font-medium text-red-600 hover:underline cursor-pointer"
               @click="openDeleteModal = true"
@@ -92,7 +85,7 @@ import UploadImages from "@/components/input/uploadImages.vue";
 
 // validator
 import { useVuelidate } from "@vuelidate/core";
-import { required, minLength, } from "@vuelidate/validators";
+import { required, minLength } from "@vuelidate/validators";
 // import { ShapeFlags } from "@vue/shared";
 
 const winnerData = reactive({
@@ -107,9 +100,8 @@ const rules = computed(() => {
   };
 });
 
-function imageValu(item,e) {
+function imageValu(e) {
   winnerData.image = e;
-  item.image = 1
 }
 
 const $v = useVuelidate(rules, winnerData);
@@ -136,17 +128,17 @@ const data = [
   {
     id: 1,
     name: "Nodir Ikromov ",
-    image: "https://avatars.githubusercontent.com/u/115967219?v=4",
+    image: "https://i.ytimg.com/vi/YaCiB6JZG9w/sddefault.jpg",
   },
   {
     id: 2,
     name: "Shahzod Temirov",
-    image: "https://avatars.githubusercontent.com/u/115967219?v=4",
+    image: "https://i.ytimg.com/vi/YaCiB6JZG9w/sddefault.jpg",
   },
   {
     id: 1,
     name: "Nodir Ikromov ",
-    image: "https://avatars.githubusercontent.com/u/115967219?v=4",
+    image: "https://i.ytimg.com/vi/YaCiB6JZG9w/sddefault.jpg",
   },
 ];
 </script>
