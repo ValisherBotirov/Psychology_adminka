@@ -2,36 +2,22 @@
   <div class="bg-[#fff] p-8 rounded-md">
     <div class="flex justify-between items-center mb-4">
       <h3 class="text-gray-700 text-3xl font-medium text-center">
-        Yutuqlar bo'limi
+        Hamkorlar bo'limi
       </h3>
       <div @click="addWinnerBtn">
-        <SButton variant="info"> Yutuqlar qo'shish</SButton>
+        <SButton variant="info"> Hamkor qo'shish</SButton>
       </div>
     </div>
     <div class="flex items-center justify-between gap-4 mt-4">
       <FormInput
-        v-model="winnerData.fullName"
-        :error="$v.fullName.$error"
-        label="F.I.Sh"
-        placeholder="F.I.Sh"
-        class="w-full"
-      />
-      <FormInput
-        v-model="winnerData.job"
-        :error="$v.job.$error"
-        label="Kasb"
-        placeholder="Kasb"
-        class="w-full"
-      />
-      <FormInput
-        v-model="winnerData.description"
-        :error="$v.description.$error"
-        label="Fikr"
-        placeholder="Fikr"
+        v-model="winnerData.companyName"
+        :error="$v.companyName.$error"
+        label="Hamkor nomi"
+        placeholder="Hamkor nomi"
         class="w-full"
       />
       <UploadImages
-        ref="ok"
+        ref="removeImg"
         :img="winnerData.image"
         @getBase64="imageValu"
         line
@@ -44,10 +30,8 @@
       <thead class="text-xs text-gray-700 uppercase bg-gray-50">
         <tr>
           <th scope="col" class="p-4">#</th>
-          <th scope="col" class="px-6 py-3">F.I.Sh</th>
-          <th scope="col" class="px-6 py-3">Kasb</th>
-          <th scope="col" class="px-6 py-3">Fikr</th>
-          <th scope="col" class="px-6 py-3">Rasm</th>
+          <th scope="col" class="px-6 py-3">Hamkor nomi</th>
+          <th scope="col" class="px-6 py-3">Hamkor logosi</th>
           <th scope="col" class="px-6 py-3 text-end">Amallar</th>
         </tr>
       </thead>
@@ -64,14 +48,6 @@
             class="test-name px-6 py-4 font-medium text-gray-900 whitespace-nowrap max-w-[350px] break-words overflow-x-scroll"
           >
             {{ item?.name }}
-          </th>
-          <th
-            class="test-name px-6 py-4 font-medium text-gray-900 whitespace-nowrap max-w-[350px] break-words overflow-x-scroll"
-          >
-            {{ item?.type }}
-          </th>
-          <th class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
-            {{ item?.text }}
           </th>
           <th class="font-medium text-gray-900 whitespace-nowrap">
             <img
@@ -93,10 +69,10 @@
             >
               <i class="fa-solid fa-trash text-[red] text-[20px]"></i>
             </div>
-            <DeleteModal
+            <!-- <DeleteModal
               :isOpen="openDeleteModal"
               @closeModal="(e) => (openDeleteModal = e)"
-            />
+            /> -->
           </td>
         </tr>
       </tbody>
@@ -110,31 +86,22 @@ import DeleteModal from "@/components/modal/DeleteModal.vue";
 
 import { ref, reactive, computed } from "vue";
 import { useToast } from "vue-toastification";
-import image from "../../../assets/image/Shahzod.jpg";
 import FormInput from "@/components/input/FormInput.vue";
 import UploadImages from "@/components/input/uploadImages.vue";
 
 // validator
 import { useVuelidate } from "@vuelidate/core";
-import { required, minLength, maxLength } from "@vuelidate/validators";
-import { ShapeFlags } from "@vue/shared";
+import { required, minLength, } from "@vuelidate/validators";
+// import { ShapeFlags } from "@vue/shared";
 
 const winnerData = reactive({
-  fullName: "",
-  job: "",
-  description: "",
+  companyName: "",
   image: "",
 });
 
 const rules = computed(() => {
   return {
-    fullName: { required, minLength: minLength(3) },
-    job: { required, minLength: minLength(2) },
-    description: {
-      required,
-      minLength: minLength(2),
-      maxLength: maxLength(80),
-    },
+    companyName: { required, minLength: minLength(3) },
     image: { required },
   };
 });
@@ -144,7 +111,7 @@ function imageValu(e) {
 }
 
 const $v = useVuelidate(rules, winnerData);
-const ok = ref();
+const removeImg = ref();
 const addWinnerBtn = async () => {
   $v.value.$validate();
   if (!$v.value.$error) {
@@ -153,11 +120,8 @@ const addWinnerBtn = async () => {
     } catch (error) {
       console.log(error);
     } finally {
-      (winnerData.fullName = ""),
-        (winnerData.job = ""),
-        (winnerData.description = ""),
-        (winnerData.image = "");
-      ok.value.removeImage();
+      (winnerData.companyName = ""), (winnerData.image = "");
+      removeImg.value.removeImage();
       $v.value.$reset();
     }
   }
@@ -170,22 +134,16 @@ const data = [
   {
     id: 1,
     name: "Nodir Ikromov ",
-    type: "Front end Developer",
-    text: "Zo'r maslaxat beraman hammaga",
     image: "https://avatars.githubusercontent.com/u/115967219?v=4",
   },
   {
     id: 2,
     name: "Shahzod Temirov",
-    type: "iOS Developer",
-    text: "Gap yuq zo'r",
-    image: image,
+    image: "https://avatars.githubusercontent.com/u/115967219?v=4",
   },
   {
     id: 1,
     name: "Nodir Ikromov ",
-    type: "Front end Developer",
-    text: "Zo'r maslaxat beraman hammaga",
     image: "https://avatars.githubusercontent.com/u/115967219?v=4",
   },
 ];
