@@ -3,13 +3,6 @@
         <div class="border border-gray-600 py-4 px-5 bg-white">
             <div class="flex items-center gap-4 mt-1 mb-4" v-if="!routeId">
                 <SingleSelect
-                        v-model="form.categoryValue"
-                        placeholder="Kategoriyani tanlang"
-                        :data="categoryData"
-                        :error="$v.categoryValue.$error"
-                        class="w-full"
-                />
-                <SingleSelect
                         v-model="form.subcategoryValue"
                         placeholder="Test nomini tanlang"
                         :data="subcategoryData"
@@ -52,6 +45,7 @@
                         custom-class="py-2"
                         label="Savol uchun ball belgilang"
                         class="w-full"
+                        :error="$v.score.$error"
                         v-model="form.score"
                 />
             </div>
@@ -104,7 +98,7 @@
 import SButton from "@/components/buttons/SButton.vue";
 import Textarea from "@/components/input/textarea.vue";
 import UploadImages from "@/components/input/uploadImages.vue";
-import {ref} from "@vue/runtime-core";
+import {onMounted, ref} from "@vue/runtime-core";
 import {useToast} from "vue-toastification";
 import FormInput from "@/components/input/FormInput.vue";
 import {computed, reactive} from "vue";
@@ -113,52 +107,28 @@ import {required} from "@vuelidate/validators";
 import {useVuelidate} from "@vuelidate/core";
 import {useRoute} from "vue-router";
 import axios from "../../plugins/axios.js";
+import {useCategoryStore} from "@/store/categories.js";
+
+const categoryStore = useCategoryStore()
 
 const toast = useToast();
 
 const route = useRoute();
 
-const categoryData = [
-    {
-        value: "child",
-        label: "Bolalar uchun",
-    },
-    {
-        value: "child2",
-        label: "16 yoshdan kattalar uchun",
-    },
-    {
-        value: "child3",
-        label: "Kattalar uchun",
-    },
-];
 
-const subcategoryData = [
-    {
-        value: "sub",
-        label: "Birinchi test",
-    },
-    {
-        value: "sub2",
-        label: "Ikkinchi test",
-    },
-    {
-        value: "sub3",
-        label: "Uchunchi test",
-    },
-    {
-        value: "sub4",
-        label: "To'rtinchi test",
-    },
-];
+const subcategoryData = computed(()=> categoryStore.subCategories.map((el)=>{
+    return {
+        value:el.id,
+        label:el.title
+    }
+}));
 
 const routeId = route.query.id;
 
 const form = reactive({
-    testType: "SINGLE_CHOICE",
+    testType: "CHECKBOX",
     title: "",
     imageID: null,
-    categoryValue: "",
     subcategoryValue: "",
     score: "",
     correct: null,
@@ -178,19 +148,13 @@ const form = reactive({
             image: "",
             correct: false
         },
-        {
-            id: 3,
-            optionText: "",
-            image: "https://avatars.githubusercontent.com/u/94363665?v=4",
-            correct: false
-        },
     ],
 });
 
 const rule = computed(() => {
     return {
-        categoryValue: {required},
         subcategoryValue: {required},
+        score:{required}
     };
 });
 
@@ -228,13 +192,10 @@ function getQuestionImages(e) {
 function fetchUploadImagesId(item,e){
     const formData = new FormData()
     formData.append("file",e)
-    // let id = ""
     axios.post('media/upload',formData).then((res)=>{
-        // id = res.data.id
         item.image = res.data.id
     })
 
-    // return id
 }
 function onSubmit() {
     if (!routeId) {
@@ -249,4 +210,8 @@ function onSubmit() {
         console.log(check);
     }
 }
+
+onMounted(()=>{
+    categoryStore.fetchSubCategoryAll()
+})
 </script>

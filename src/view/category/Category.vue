@@ -132,7 +132,7 @@
                            </div>
                            <div
                                class="font-medium text-red-600 hover:underline cursor-pointer"
-                               @click="deleteSubCategory(item.ID)"
+                               @click="deleteSubCategory(item.id)"
                            >
                                <i class="fa-solid fa-trash text-[red] text-[20px]"></i>
                            </div>
@@ -247,7 +247,8 @@ const openActionModal = ref(false);
 
 const formSubcategory = reactive({
     title:"",
-    parentID: 0,
+    description:"",
+    categoryID: 0,
 });
 
 const ruleSubcategory = reactive(() => {
@@ -260,27 +261,25 @@ const $vSubcategory = useVuelidate(ruleSubcategory, formSubcategory);
 
 function openSubCategory(item) {
     openActionModal.value = true;
-    formSubcategory.parentID = item.ID;
+    formSubcategory.categoryID = item.ID;
     fetchSubCategoryList(item.ID);
-    subCategoryList.value = item.tests
 }
 
 function fetchSubCategoryList(id) {
-
-    // axios.get('category/sub-details/'+id).then((res)=>{
-    //     console.log(res,"sub res")
-    //     subCategoryList.value = res.data
-    // }).catch((err)=>{
-    //     console.log(err)
-    // })
+    axios.get('test/allByCategoryId/'+id).then((res)=>{
+        console.log(res,"sub res")
+        subCategoryList.value = res.data
+    }).catch((err)=>{
+        console.log(err)
+    })
 }
 
 function deleteSubCategory(id) {
     axios
-        .delete("/category/" + id)
+        .delete("test/" + id)
         .then((res) => {
             console.log(res);
-            fetchSubCategoryList(formSubcategory.parentID);
+            fetchSubCategoryList(formSubcategory.categoryID);
         })
         .catch((err) => {
             console.log(err);
@@ -293,10 +292,10 @@ function addSubcategory() {
     if (!$vSubcategory.value.$error) {
         if (!editSubCategory.value) {
             axios
-                .post("category", formSubcategory)
+                .post("test", formSubcategory)
                 .then((res) => {
                     console.log(res);
-                    fetchSubCategoryList(formSubcategory.parentID);
+                    fetchSubCategoryList(formSubcategory.categoryID);
                 })
                 .catch((err) => {
                     console.log(err);
@@ -312,10 +311,10 @@ function addSubcategory() {
                 ID: editSubCategory.value,
             };
             axios
-                .patch("/category", fetchObj)
+                .patch("test", fetchObj)
                 .then((res) => {
                     console.log(res);
-                    fetchSubCategoryList(formSubcategory.parentID);
+                    fetchSubCategoryList(formSubcategory.categoryID);
                 })
                 .catch((err) => {
                     console.log(err);
@@ -330,8 +329,7 @@ function addSubcategory() {
 }
 
 function editSubcategory(item) {
-    console.log(item, "subcategoriya item");
-    editSubCategory.value = item.ID;
+    editSubCategory.value = item.id;
     formSubcategory.title=item.title;
 }
 

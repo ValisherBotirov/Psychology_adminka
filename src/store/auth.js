@@ -18,8 +18,8 @@ export const useAuthStore = defineStore("auth", {
         const token = user.data.accessToken
         sessionStorage.setItem('token',token)
         sessionStorage.setItem('refreshToken',user.data.refreshToken)
-
-        await this.getUserRole(token)
+        sessionStorage.setItem('userRole','ADMIN')
+        // await this.getUserRole(token)
         this.user.isRegiter = 1
         sessionStorage.setItem('isRegister',1)
         toast.success("Tizimga muvaffaqiyatli kirdingiz!")
