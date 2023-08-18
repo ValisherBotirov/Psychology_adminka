@@ -194,7 +194,6 @@ function fetchUploadImagesId(item,e){
     axios.post('media/upload',formData).then((res)=>{
         item.image = res.data.id
     })
-
 }
 function onSubmit() {
     if (!routeId) {

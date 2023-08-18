@@ -3,17 +3,10 @@
     <div class="border border-gray-600 py-4 px-5 bg-white">
       <div class="flex items-center gap-4 mt-1 mb-4" v-if="!routeId">
         <SingleSelect
-          v-model="form.categoryValue"
-          placeholder="Kategoriyani tanlang"
-          :data="categoryData"
-          :error="$v.categoryValue.$error"
-          class="w-full"
-        />
-        <SingleSelect
-          v-model="form.subcategoryValue"
+          v-model="form.testID"
           placeholder="Test nomini tanlang"
           :data="subcategoryData"
-          :error="$v.subcategoryValue.$error"
+          :error="$v.testID.$error"
           class="w-full"
         />
       </div>
@@ -51,6 +44,8 @@
           custom-class="py-2"
           label="Savol uchun ball belgilang"
           class="w-full"
+          v-model="form.score"
+          :error="$v.score.$error"
         />
       </div>
       <div class="grid grid-cols-2 gap-x-6 gap-y-3">
@@ -81,7 +76,7 @@
             />
             <UploadImages
               small
-              @getBase64="(e) => (item.image = e)"
+              @getBase64="e => fetchUploadImagesId(item,e)"
               :inputId="`file${item.id}`"
               :img="item.image"
             />
@@ -109,58 +104,36 @@ import { useRoute } from "vue-router";
 import { computed, reactive } from "vue";
 import { required } from "@vuelidate/validators";
 import { useVuelidate } from "@vuelidate/core";
+import {useCategoryStore} from "@/store/categories.js";
+import axios from "../../plugins/axios.js";
 
 const toast = useToast();
 const route = useRoute();
 
-const categoryData = [
-  {
-    value: "child",
-    label: "Bolalar uchun",
-  },
-  {
-    value: "child2",
-    label: "16 yoshdan kattalar uchun",
-  },
-  {
-    value: "child3",
-    label: "Kattalar uchun",
-  },
-];
+const categoryStore = useCategoryStore()
 
-const subcategoryData = [
-  {
-    value: "sub",
-    label: "Birinchi test",
-  },
-  {
-    value: "sub2",
-    label: "Ikkinchi test",
-  },
-  {
-    value: "sub3",
-    label: "Uchunchi test",
-  },
-  {
-    value: "sub4",
-    label: "To'rtinchi test",
-  },
-];
+
+const subcategoryData = computed(()=> categoryStore.subCategories.map((el)=>{
+    return {
+        value:el.id,
+        label:el.title
+    }
+}));
 
 const routeId = route.query.id;
 
 const form = reactive({
   testType: "MULTIPLE_CHOICE",
   title: "",
-  categoryValue: "",
-  subcategoryValue: "",
+  imageID: null,
+  testID: "",
   score: "",
-  correctAnswers: [1, 3],
+  correctAnswers: [1],
   answerCreateDTOList: [
     {
       id: 1,
       optionText: "salom",
-      correct: true,
+      correct: false,
       image: "",
     },
     {
@@ -169,19 +142,13 @@ const form = reactive({
       correct: false,
       image: "",
     },
-    {
-      id: 3,
-      optionText: "",
-      correct: false,
-      image: "https://avatars.githubusercontent.com/u/94363665?v=4",
-    },
   ],
 });
 
 const rule = computed(() => {
   return {
-    categoryValue: { required },
-    subcategoryValue: { required },
+    testID: { required },
+      score:{required}
   };
 });
 
@@ -204,9 +171,26 @@ function deleteOption(id) {
 }
 // work images input
 
-const questionImage = ref("");
+
+
+// work images input
 function getQuestionImages(e) {
-  console.log(e, "emit");
+    const formData = new FormData()
+    formData.append("file", e)
+    axios.post('media/upload', formData).then((res) => {
+        console.log(res)
+        form.imageID = res.data.id
+    })
+}
+
+// media upload images id
+
+function fetchUploadImagesId(item,e){
+    const formData = new FormData()
+    formData.append("file",e)
+    axios.post('media/upload',formData).then((res)=>{
+        item.image = res.data.id
+    })
 }
 
 function onSubmit() {
@@ -214,13 +198,7 @@ function onSubmit() {
     $v.value.$validate();
   }
   if (!$v.value.$error) {
-    const check = form.answerCreateDTOList.some((el) => el.correct !== false);
-    if (!check) {
-      toast.error("Iltimos bitta to'g'ri javobni belgilang");
-    }
-
     const correctArr = [];
-
     form.answerCreateDTOList.forEach((el) => {
       if (el.correct) {
         correctArr.push(el.id);
@@ -229,13 +207,35 @@ function onSubmit() {
 
     form.correctAnswers = correctArr;
 
+      const check = form.answerCreateDTOList.some((el) => el.correct !== false);
+      if (!check) {
+          toast.error("Iltimos bitta to'g'ri javobni belgilang");
+      }
+      else{
+          axios.post('/question',form).then((res)=>{
+              console.log(res)
+              toast.success("Test muvaffaqiyatli qo'shildi")
+          }).catch((err)=>{
+              toast.error("Qo'shishda xatolik yuz berdi!")
+          }).finally(()=>{
+              setTimeout(()=>{
+                  window.location.reload()
+              },1000)
+          })
+      }
+
     console.log(form, "opt");
   }
 }
 
 onMounted(() => {
   form.correctAnswers.forEach((id) => {
+      console.log(id)
     form.answerCreateDTOList.find((el) => el.id === id).correct = true;
   });
+
+    categoryStore.fetchSubCategoryAll();
 });
+
+
 </script>
