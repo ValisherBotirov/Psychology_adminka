@@ -73,7 +73,7 @@ const subcategoryData = [
 const routeId = route.query.id
 
 const form = reactive({
-    testType:'SINGLE_CHOICE',
+    testType:'CLOSE_QUESTIONS',
     title:"",
     categoryValue:"",
     subcategoryValue:"",

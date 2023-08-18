@@ -3,7 +3,7 @@
         <div class="flex justify-between items-center mb-4">
             <h3 class="text-gray-700 text-3xl font-medium">Kategoriyalar</h3>
         </div>
-
+<!--<pre>{{categoryList}}</pre>-->
         <div class="flex gap-3 items-end">
             <FormInput
                     placeholder="Kategoriya nomi"
@@ -47,11 +47,11 @@
                         <p class="font-bold cursor-pointer">{{ index + 1 }}.</p>
                     </td>
                     <th class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
-                        {{ item?.title }}
+                        {{ item?.name }}
                     </th>
                     <td class="flex items-center px-6 py-4 space-x-4 justify-end">
                         <SButton variant="secondary" @click="openSubCategory(item)"
-                        >Subkategoriya qo'shish</SButton
+                        >Tets bo'limini qo'shish</SButton
                         >
                         <div
                                 @click="itemEdit(item)"
@@ -132,7 +132,7 @@
                            </div>
                            <div
                                class="font-medium text-red-600 hover:underline cursor-pointer"
-                               @click="deleteSubCategory(item.ID)"
+                               @click="deleteSubCategory(item.id)"
                            >
                                <i class="fa-solid fa-trash text-[red] text-[20px]"></i>
                            </div>
@@ -147,7 +147,7 @@
     </div>
 </template>
 <script setup>
-import {  ref } from "@vue/runtime-core";
+import {onMounted, ref} from "@vue/runtime-core";
 import DeleteModal from "@/components/modal/DeleteModal.vue";
 import BlockPreloader from "@/components/buttons/BlockPreloader.vue";
 import SButton from "@/components/buttons/SButton.vue";
@@ -157,76 +157,12 @@ import FormInput from "@/components/input/FormInput.vue";
 import { required } from "@vuelidate/validators";
 import { useVuelidate } from "@vuelidate/core";
 import ActionModal from "@/components/modal/ActionModal.vue";
+import {useCategoryStore} from "@/store/categories.js";
 
 import { useToast } from "vue-toastification";
 const toast = useToast();
+const categoryStore = useCategoryStore()
 
-
-const categoryList = computed(() => [
-    {
-        id:1,
-        title:"Kategory name",
-        children:[
-            {
-                id:1,
-                title:"Child Category1"
-            },
-            {
-                id:1,
-                title:"Child Category1"
-            },  {
-                id:1,
-                title:"Child Category1"
-            },  {
-                id:1,
-                title:"Child Category1"
-            },  {
-                id:1,
-                title:"Child Category1"
-            },  {
-                id:1,
-                title:"Child Category1"
-            },  {
-                id:1,
-                title:"Child Category1"
-            },{
-                id:1,
-                title:"Child Category1"
-            },{
-                id:1,
-                title:"Child Category1"
-            },{
-                id:1,
-                title:"Child Category1"
-            },{
-                id:1,
-                title:"Child Category1"
-            },{
-                id:1,
-                title:"Child Category1"
-            },{
-                id:1,
-                title:"Child Category1"
-            },{
-                id:1,
-                title:"Child Category1"
-            },{
-                id:1,
-                title:"Child Category1"
-            },{
-                id:1,
-                title:"Child Category1"
-            },{
-                id:1,
-                title:"Child Category1"
-            },
-            {
-                id:2,
-                title:"Child Category2"
-            }
-        ]
-    }
-]);
 
 const formCategory = reactive({
    title:""
@@ -243,15 +179,11 @@ function addCategory() {
     $vCategory.value.$validate();
     if (!$vCategory.value.$error) {
         if (!isEdit.value) {
-            const fetchObj = {
-                title:formCategory.title,
-                parentID: 0,
-            };
             axios
-                .post("/category", fetchObj)
+                .post("/category", {name:formCategory.title})
                 .then((res) => {
-                    console.log(res);
                     toast.success("Kategory qo'shildi !!!");
+                    categoryStore.fetchCategoryAll()
                 })
                 .catch((err) => {
                     console.log(err);
@@ -262,15 +194,11 @@ function addCategory() {
                         $vCategory.value.$reset();
                 });
         } else {
-            const fetchObj = {
-                title:formCategory.title,
-                ID: isEdit.value,
-            };
             axios
-                .patch("/category", fetchObj)
+                .patch(`/category/${isEdit.value}?name=${formCategory.title}`)
                 .then((res) => {
-                    console.log(res);
-                    toast.success("Kategory qo'shildi !!!");
+                    toast.success("Muvaqiyatli tahrirlandi!");
+                    categoryStore.fetchCategoryAll()
                 })
                 .catch((err) => {
                     console.log(err);
@@ -289,7 +217,7 @@ function addCategory() {
 const isEdit = ref(null);
 function itemEdit(item) {
     isEdit.value = item.ID;
-    formCategory.title = item.title
+    formCategory.title = item.name
 }
 
 // delete category
@@ -305,6 +233,8 @@ function fetchDeleteModal() {
         .then((res) => {
             console.log(res);
             isEdit.value = "";
+            toast.success("Muvaffaqiyatli o'chirildi")
+            categoryStore.fetchCategoryAll()
         })
         .catch((err) => {
             console.log(err);
@@ -317,13 +247,13 @@ const openActionModal = ref(false);
 
 const formSubcategory = reactive({
     title:"",
-    parentID: 0,
+    description:"",
+    categoryID: 0,
 });
 
 const ruleSubcategory = reactive(() => {
     return {
         title: { required },
-
     };
 });
 
@@ -331,27 +261,25 @@ const $vSubcategory = useVuelidate(ruleSubcategory, formSubcategory);
 
 function openSubCategory(item) {
     openActionModal.value = true;
-    formSubcategory.parentID = item.ID;
+    formSubcategory.categoryID = item.ID;
     fetchSubCategoryList(item.ID);
-    subCategoryList.value = item.children
 }
 
 function fetchSubCategoryList(id) {
-
-    // axios.get('category/sub-details/'+id).then((res)=>{
-    //     console.log(res,"sub res")
-    //     subCategoryList.value = res.data
-    // }).catch((err)=>{
-    //     console.log(err)
-    // })
+    axios.get('test/allByCategoryId/'+id).then((res)=>{
+        console.log(res,"sub res")
+        subCategoryList.value = res.data
+    }).catch((err)=>{
+        console.log(err)
+    })
 }
 
 function deleteSubCategory(id) {
     axios
-        .delete("/category/" + id)
+        .delete("test/" + id)
         .then((res) => {
             console.log(res);
-            fetchSubCategoryList(formSubcategory.parentID);
+            fetchSubCategoryList(formSubcategory.categoryID);
         })
         .catch((err) => {
             console.log(err);
@@ -364,10 +292,10 @@ function addSubcategory() {
     if (!$vSubcategory.value.$error) {
         if (!editSubCategory.value) {
             axios
-                .post("category", formSubcategory)
+                .post("test", formSubcategory)
                 .then((res) => {
                     console.log(res);
-                    fetchSubCategoryList(formSubcategory.parentID);
+                    fetchSubCategoryList(formSubcategory.categoryID);
                 })
                 .catch((err) => {
                     console.log(err);
@@ -383,10 +311,10 @@ function addSubcategory() {
                 ID: editSubCategory.value,
             };
             axios
-                .patch("/category", fetchObj)
+                .patch("test", fetchObj)
                 .then((res) => {
                     console.log(res);
-                    fetchSubCategoryList(formSubcategory.parentID);
+                    fetchSubCategoryList(formSubcategory.categoryID);
                 })
                 .catch((err) => {
                     console.log(err);
@@ -401,8 +329,7 @@ function addSubcategory() {
 }
 
 function editSubcategory(item) {
-    console.log(item, "subcategoriya item");
-    editSubCategory.value = item.ID;
+    editSubCategory.value = item.id;
     formSubcategory.title=item.title;
 }
 
@@ -413,6 +340,14 @@ function closeActionModal() {
     $vSubcategory.value.$reset();
 }
 
+
+// new code
+
+const categoryList = computed(()=> categoryStore.categories)
+
+onMounted(()=>{
+    categoryStore.fetchCategoryAll()
+})
 
 
 </script>
