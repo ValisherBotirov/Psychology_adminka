@@ -34,6 +34,7 @@
         ref="ok"
         :img="winnerData.image"
         @getBase64="imageValu"
+        inputId="1"
         line
         class="w-full"
         label="Rasm yuklash"
