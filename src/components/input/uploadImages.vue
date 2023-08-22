@@ -152,7 +152,7 @@ Code
   </div>
 </template>
 <script setup lang="ts">
-import { onMounted, reactive, ref } from "vue";
+import { onMounted, reactive, ref,watch } from "vue";
 
 const emit = defineEmits(["upload", "getBase64"]);
 interface Props {
@@ -180,6 +180,13 @@ const image = reactive({
   url: props?.img,
   file: null,
 });
+
+watch(()=>props.img,
+  (e)=>{
+    console.log(e,"sdsd");
+    image.url=e
+  }
+)
 
 let imageName = ref("");
 const handleFile = (event: any) => {

@@ -39,7 +39,10 @@
         <tr>
           <th scope="col" class="p-4">#</th>
           <th scope="col" class="px-6 py-3">Hamkor nomi</th>
-          <th scope="col" class="px-6 py-3">Hamkor logosi</th>
+          <th scope="col" class="px-6 py-3">Hamkor urli</th>
+          <th scope="col" class="px-6 py-3 flex justify-center">
+            Hamkor logosi
+          </th>
           <th scope="col" class="px-6 py-3 text-end">Amallar</th>
         </tr>
       </thead>
@@ -57,11 +60,16 @@
           >
             {{ item?.name }}
           </th>
+          <th
+            class="test-name px-6 py-4 font-medium text-gray-900 whitespace-nowrap max-w-[350px] break-words overflow-x-scroll"
+          >
+            {{ item?.link }}
+          </th>
           <th class="font-medium text-gray-900 whitespace-nowrap">
             <img
-              :src="item?.image"
+              :src="item?.image?.url"
               alt="image"
-              class="w-[60px] h-[60px] object-fill rounded-[50%]"
+              class="w-[70px] h-[70px] object-fill mx-auto"
             />
           </th>
           <td class="flex items-center px-6 py-4 space-x-4 justify-end">
@@ -73,13 +81,14 @@
             </div>
             <div
               class="font-medium text-red-600 hover:underline cursor-pointer"
-              @click="openDeleteModal = true"
+              @click="deletePartnerId(item?.id)"
             >
               <i class="fa-solid fa-trash text-[red] text-[20px]"></i>
             </div>
             <DeleteModal
               :isOpen="openDeleteModal"
               @closeModal="(e) => (openDeleteModal = e)"
+              @delete="deletedPartners"
             />
           </td>
         </tr>
@@ -89,10 +98,9 @@
 </template>
 <script setup lang="ts">
 import SButton from "@/components/buttons/SButton.vue";
-// import { imageEmits } from "element-plus";
 import DeleteModal from "@/components/modal/DeleteModal.vue";
 
-import { ref, reactive, computed } from "vue";
+import { ref, reactive, computed, onMounted } from "vue";
 import { useToast } from "vue-toastification";
 import FormInput from "@/components/input/FormInput.vue";
 import UploadImages from "@/components/input/uploadImages.vue";
@@ -101,11 +109,11 @@ import UploadImages from "@/components/input/uploadImages.vue";
 import { useVuelidate } from "@vuelidate/core";
 import { required, minLength } from "@vuelidate/validators";
 import axios from "@/plugins/axios.js";
-// import { ShapeFlags } from "@vue/shared";
 
 const toast = useToast();
 const openDeleteModal = ref(false);
-
+const data = ref();
+const forIdDelete = ref();
 const winnerData = reactive({
   name: "",
   link: "",
@@ -140,6 +148,7 @@ const addPartnerBtn = async () => {
         imageId: winnerData.imageId,
       };
       const partner = await axios.post("/partners", data);
+      getPartner();
       toast.success("Hamkor qo'shildi !");
     } catch (error) {
       console.log(error);
@@ -156,27 +165,32 @@ const addPartnerBtn = async () => {
 // api get parent
 async function getPartner() {
   try {
+    const dataParent = await axios.get("/partners/get-all");
+    data.value = dataParent.data;
   } catch (error) {
     console.log(error);
   }
 }
-const data = [
-  {
-    id: 1,
-    name: "Nodir Ikromov ",
-    image: "https://avatars.githubusercontent.com/u/115967219?v=4",
-  },
-  {
-    id: 2,
-    name: "Shahzod Temirov",
-    image: "https://avatars.githubusercontent.com/u/115967219?v=4",
-  },
-  {
-    id: 1,
-    name: "Nodir Ikromov ",
-    image: "https://avatars.githubusercontent.com/u/115967219?v=4",
-  },
-];
+
+// delete partner
+function deletePartnerId(item) {
+  openDeleteModal.value = true;
+  forIdDelete.value = item;
+}
+async function deletedPartners() {
+  try {
+    const deletePartner = await axios.delete(`/partners/${forIdDelete.value}`);
+    getPartner();
+    toast.error("Hamkor o'chirildi !");
+  } catch (error) {
+    toast.error("Xatolik mavjud !");
+    console.log(error);
+  }
+}
+
+onMounted(() => {
+  getPartner();
+});
 </script>
 <style>
 .test-name::-webkit-scrollbar {

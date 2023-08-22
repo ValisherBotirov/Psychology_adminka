@@ -19,7 +19,7 @@
       />
       <UploadImages
         ref="removeImg"
-        :img="winnerData.imageId"
+        :img="editImages"
         @getBase64="imageValu"
         line
         class="w-full"
@@ -179,8 +179,9 @@ async function deleted() {
 }
 
 // edit news api
+const editImages = ref("")
 function addNewsId(item) {
-  winnerData.imageId = item.imageID;
+  editImages.value = item.image.url;
   winnerData.link = item.link;
 }
 
