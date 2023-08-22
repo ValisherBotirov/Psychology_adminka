@@ -10,21 +10,28 @@
     </div>
     <div class="flex justify-between gap-4 mt-4">
       <FormInput
-        v-model="winnerData.companyName"
-        :error="$v.companyName.$error"
+        v-model="winnerData.name"
+        :error="$v.name.$error"
         label="Hamkor nomi"
         placeholder="Hamkor nomi"
         class="w-full"
       />
+      <FormInput
+        v-model="winnerData.link"
+        :error="$v.link.$error"
+        label="Hamkor url"
+        placeholder="Hamkor url"
+        class="w-full"
+      />
       <UploadImages
         ref="removeImg"
-        :img="winnerData.image"
+        :img="winnerData.imageId"
         inputId="2"
         @getBase64="imageValu"
         line
         class="w-full"
         label="Rasm yuklash"
-        :error="$v.image.$error"
+        :error="$v.imageId.$error"
       />
     </div>
     <table class="w-full text-sm text-left text-gray-500 mt-4">
@@ -92,46 +99,67 @@ import UploadImages from "@/components/input/uploadImages.vue";
 
 // validator
 import { useVuelidate } from "@vuelidate/core";
-import { required, minLength, } from "@vuelidate/validators";
+import { required, minLength } from "@vuelidate/validators";
+import axios from "@/plugins/axios.js";
 // import { ShapeFlags } from "@vue/shared";
 
+const toast = useToast();
+const openDeleteModal = ref(false);
+
 const winnerData = reactive({
-  companyName: "",
-  image: "",
+  name: "",
+  link: "",
+  imageId: "",
 });
 
 const rules = computed(() => {
   return {
-    companyName: { required, minLength: minLength(3) },
-    image: { required },
+    name: { required, minLength: minLength(3) },
+    imageId: { required },
+    link: { required },
   };
 });
 
-function imageValu(item,e) {
-  winnerData.image = e;
-  item.image = 1
+// apli post parent
+function imageValu(e) {
+  const formData = new FormData();
+  formData.append("file", e);
+  axios.post("media/upload", formData).then((res) => {
+    winnerData.imageId = res.data.id;
+  });
 }
-
 const $v = useVuelidate(rules, winnerData);
 const removeImg = ref();
 const addPartnerBtn = async () => {
   $v.value.$validate();
   if (!$v.value.$error) {
     try {
-      // function
+      const data = {
+        name: winnerData.name,
+        link: winnerData.link,
+        imageId: winnerData.imageId,
+      };
+      const partner = await axios.post("/partners", data);
+      toast.success("Hamkor qo'shildi !");
     } catch (error) {
       console.log(error);
     } finally {
-      (winnerData.companyName = ""), (winnerData.image = "");
+      winnerData.name = "";
+      winnerData.imageId = "";
+      winnerData.link = "";
       removeImg.value.removeImage();
       $v.value.$reset();
     }
   }
 };
 
-const toast = useToast();
-const openDeleteModal = ref(false);
-// test data
+// api get parent
+async function getPartner() {
+  try {
+  } catch (error) {
+    console.log(error);
+  }
+}
 const data = [
   {
     id: 1,

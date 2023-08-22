@@ -24,21 +24,21 @@
         class="w-full"
       />
       <FormInput
-        v-model="winnerData.description"
-        :error="$v.description.$error"
+        v-model="winnerData.comment"
+        :error="$v.comment.$error"
         label="Fikr"
         placeholder="Fikr"
         class="w-full"
       />
       <UploadImages
         ref="ok"
-        :img="winnerData.image"
+        :img="winnerData.imageId"
         @getBase64="imageValu"
         inputId="1"
         line
         class="w-full"
         label="Rasm yuklash"
-        :error="$v.image.$error"
+        :error="$v.imageId.$error"
       />
     </div>
     <table class="w-full text-sm text-left text-gray-500 mt-4">
@@ -64,15 +64,15 @@
           <th
             class="test-name px-6 py-4 font-medium text-gray-900 whitespace-nowrap max-w-[350px] break-words overflow-x-scroll"
           >
-            {{ item?.name }}
+            {{ item?.fullName }}
           </th>
           <th
             class="test-name px-6 py-4 font-medium text-gray-900 whitespace-nowrap max-w-[350px] break-words overflow-x-scroll"
           >
-            {{ item?.type }}
+            {{ item?.job }}
           </th>
           <th class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
-            {{ item?.text }}
+            {{ item?.comment }}
           </th>
           <th class="font-medium text-gray-900 whitespace-nowrap">
             <img
@@ -90,13 +90,14 @@
             </div>
             <div
               class="font-medium text-red-600 hover:underline cursor-pointer"
-              @click="openDeleteModal = true"
+              @click="ifForDelete(item?.id)"
             >
               <i class="fa-solid fa-trash text-[red] text-[20px]"></i>
             </div>
             <DeleteModal
               :isOpen="openDeleteModal"
               @closeModal="(e) => (openDeleteModal = e)"
+              @delete="studentDelete"
             />
           </td>
         </tr>
@@ -109,39 +110,46 @@ import SButton from "@/components/buttons/SButton.vue";
 // import { imageEmits } from "element-plus";
 import DeleteModal from "@/components/modal/DeleteModal.vue";
 
-import { ref, reactive, computed } from "vue";
+import { ref, reactive, computed, onMounted } from "vue";
 import { useToast } from "vue-toastification";
-import image from "../../../assets/image/Shahzod.jpg";
 import FormInput from "@/components/input/FormInput.vue";
 import UploadImages from "@/components/input/uploadImages.vue";
 
 // validator
 import { useVuelidate } from "@vuelidate/core";
 import { required, minLength, maxLength } from "@vuelidate/validators";
-import { ShapeFlags } from "@vue/shared";
+import axios from "@/plugins/axios.js";
 
+const toast = useToast();
+const openDeleteModal = ref(false);
+const deleteId = ref();
+const data = ref();
 const winnerData = reactive({
   fullName: "",
   job: "",
-  description: "",
-  image: "",
+  comment: "",
+  imageId: "",
 });
 
 const rules = computed(() => {
   return {
     fullName: { required, minLength: minLength(3) },
     job: { required, minLength: minLength(2) },
-    description: {
+    comment: {
       required,
       minLength: minLength(2),
       maxLength: maxLength(80),
     },
-    image: { required },
+    imageId: { required },
   };
 });
 
 function imageValu(e) {
-  winnerData.image = e;
+  const formData = new FormData();
+  formData.append("file", e);
+  axios.post("media/upload", formData).then((res) => {
+    winnerData.imageId = res.data.id;
+  });
 }
 
 const $v = useVuelidate(rules, winnerData);
@@ -149,47 +157,61 @@ const ok = ref();
 const addWinnerBtn = async () => {
   $v.value.$validate();
   if (!$v.value.$error) {
+    const data = {
+      fullName: winnerData.fullName,
+      comment: winnerData.comment,
+      job: winnerData.job,
+      image: winnerData.imageId,
+    };
     try {
-      // function
+      const winner = await axios.post("/active-students", data);
+      getWinner();
+      toast.success("O'quvchi qo'shildi !");
     } catch (error) {
       console.log(error);
+      toast.error("Xatolik mavjud !");
     } finally {
       (winnerData.fullName = ""),
         (winnerData.job = ""),
-        (winnerData.description = ""),
-        (winnerData.image = "");
+        (winnerData.comment = ""),
+        (winnerData.imageId = "");
       ok.value.removeImage();
       $v.value.$reset();
     }
   }
 };
 
-const toast = useToast();
-const openDeleteModal = ref(false);
-// test data
-const data = [
-  {
-    id: 1,
-    name: "Nodir Ikromov ",
-    type: "Front end Developer",
-    text: "Zo'r maslaxat beraman hammaga",
-    image: "https://avatars.githubusercontent.com/u/115967219?v=4",
-  },
-  {
-    id: 2,
-    name: "Shahzod Temirov",
-    type: "iOS Developer",
-    text: "Gap yuq zo'r",
-    image: image,
-  },
-  {
-    id: 1,
-    name: "Nodir Ikromov ",
-    type: "Front end Developer",
-    text: "Zo'r maslaxat beraman hammaga",
-    image: "https://avatars.githubusercontent.com/u/115967219?v=4",
-  },
-];
+// get active students
+async function getWinner() {
+  try {
+    const activeStudents = await axios.get("/active-students/get-all");
+    data.value = activeStudents.data;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+// delete active students
+
+function ifForDelete(item) {
+  deleteId.value = item;
+  openDeleteModal.value = true;
+}
+
+async function studentDelete() {
+  try {
+    const deletedStudentApi = await axios.delete(
+      `/active-students/${deleteId.value}`
+    );
+    toast.error("O'quvchi o'chirildi !");
+    getWinner();
+  } catch (error) {
+    console.log(error);
+  }
+}
+onMounted(() => {
+  getWinner();
+});
 </script>
 <style>
 .test-name::-webkit-scrollbar {

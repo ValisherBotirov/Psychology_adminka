@@ -59,6 +59,7 @@
           </th>
           <td class="flex items-center px-6 py-4 space-x-4 justify-end">
             <div
+              @click="addNewsId(item)"
               class="font-medium text-blue-600 hover:underline cursor-pointer"
             >
               <i class="fa-solid fa-pen-to-square text-[blue] text-[20px]"></i>
@@ -78,11 +79,18 @@
         </tr>
       </tbody>
     </table>
+    <AddModal
+      custom-class="!max-w-[750px] relative"
+      modal-title="Subcategoriyalar"
+      :is-open="ctionModalClose"
+      @saveModal="ctionModalClose = false"
+    />
   </div>
 </template>
 <script setup lang="ts">
 import SButton from "@/components/buttons/SButton.vue";
 import DeleteModal from "@/components/modal/DeleteModal.vue";
+import AddModal from "@/components/modal/ActionModal.vue";
 import { ref, reactive, computed, onMounted } from "vue";
 import { useToast } from "vue-toastification";
 import FormInput from "@/components/input/FormInput.vue";
@@ -94,6 +102,7 @@ import axios from "@/plugins/axios.js";
 
 const toast = useToast();
 const openDeleteModal = ref(false);
+const ctionModalClose = ref(false);
 const forDeleteId = ref("");
 const data = ref([]);
 const winnerData = reactive({
@@ -167,6 +176,12 @@ async function deleted() {
   } finally {
     getNews();
   }
+}
+
+// edit news api
+function addNewsId(item) {
+  winnerData.imageId = item.imageID;
+  winnerData.link = item.link;
 }
 
 onMounted(() => {
