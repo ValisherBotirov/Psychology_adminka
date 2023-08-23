@@ -266,7 +266,7 @@ function openSubCategory(item) {
 }
 
 function fetchSubCategoryList(id) {
-    axios.get('test/allByCategoryId/'+id).then((res)=>{
+    axios.get('test/get/all-by-category-id/'+id).then((res)=>{
         console.log(res,"sub res")
         subCategoryList.value = res.data
     }).catch((err)=>{
