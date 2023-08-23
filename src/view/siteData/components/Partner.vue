@@ -4,11 +4,21 @@
       <h3 class="text-gray-700 text-3xl font-medium text-center">
         Hamkorlar bo'limi
       </h3>
-      <div @click="addPartnerBtn">
+      <div v-if="openBtn" @click="addPartnerBtn">
         <SButton variant="info"> Hamkor qo'shish</SButton>
       </div>
     </div>
     <div class="flex justify-between gap-4 mt-4">
+      <UploadImages
+        ref="removeImg"
+        :img="winnerData.imageId"
+        inputId="2"
+        @getBase64="imageValu"
+        line
+        class="w-full"
+        label="Rasm yuklash"
+        :error="$v.imageId.$error"
+      />
       <FormInput
         v-model="winnerData.name"
         :error="$v.name.$error"
@@ -23,26 +33,16 @@
         placeholder="Hamkor url"
         class="w-full"
       />
-      <UploadImages
-        ref="removeImg"
-        :img="winnerData.imageId"
-        inputId="2"
-        @getBase64="imageValu"
-        line
-        class="w-full"
-        label="Rasm yuklash"
-        :error="$v.imageId.$error"
-      />
     </div>
     <table class="w-full text-sm text-left text-gray-500 mt-4">
       <thead class="text-xs text-gray-700 uppercase bg-gray-50">
         <tr>
           <th scope="col" class="p-4">#</th>
-          <th scope="col" class="px-6 py-3">Hamkor nomi</th>
-          <th scope="col" class="px-6 py-3">Hamkor urli</th>
           <th scope="col" class="px-6 py-3 flex justify-center">
             Hamkor logosi
           </th>
+          <th scope="col" class="px-6 py-3">Hamkor nomi</th>
+          <th scope="col" class="px-6 py-3">Hamkor urli</th>
           <th scope="col" class="px-6 py-3 text-end">Amallar</th>
         </tr>
       </thead>
@@ -55,6 +55,13 @@
           <td class="w-4 p-4">
             <p class="font-bold cursor-pointer">{{ index + 1 }}.</p>
           </td>
+          <th class="font-medium text-gray-900 whitespace-nowrap">
+            <img
+              :src="item?.image?.url"
+              alt="image"
+              class="w-[70px] h-[70px] object-fill mx-auto"
+            />
+          </th>
           <th
             class="test-name px-6 py-4 font-medium text-gray-900 whitespace-nowrap max-w-[350px] break-words overflow-x-scroll"
           >
@@ -65,20 +72,16 @@
           >
             {{ item?.link }}
           </th>
-          <th class="font-medium text-gray-900 whitespace-nowrap">
-            <img
-              :src="item?.image?.url"
-              alt="image"
-              class="w-[70px] h-[70px] object-fill mx-auto"
-            />
-          </th>
           <td class="flex items-center px-6 py-4 space-x-4 justify-end">
             <div class="cursor-pointer hover:text-blue-700 font-medium"></div>
-            <div
+
+            <!-- edit -->
+
+            <!-- <div
               class="font-medium text-blue-600 hover:underline cursor-pointer"
             >
               <i class="fa-solid fa-pen-to-square text-[blue] text-[20px]"></i>
-            </div>
+            </div> -->
             <div
               class="font-medium text-red-600 hover:underline cursor-pointer"
               @click="deletePartnerId(item?.id)"
@@ -111,6 +114,7 @@ import { required, minLength } from "@vuelidate/validators";
 import axios from "@/plugins/axios.js";
 
 const toast = useToast();
+const openBtn = ref(false);
 const openDeleteModal = ref(false);
 const data = ref();
 const forIdDelete = ref();
@@ -134,6 +138,11 @@ function imageValu(e) {
   formData.append("file", e);
   axios.post("media/upload", formData).then((res) => {
     winnerData.imageId = res.data.id;
+    if (res.status = 201) {
+      openBtn.value = true
+    }
+  }).catch(()=>{
+    toast.error('Rasm tanlanmadi, qayta tanlang !')
   });
 }
 const $v = useVuelidate(rules, winnerData);

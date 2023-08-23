@@ -4,19 +4,11 @@
       <h3 class="text-gray-700 text-3xl font-medium text-center">
         Yangiliklar bo'limi
       </h3>
-      <div @click="addPartnerBtn">
+      <div v-if="openBtn" @click="addPartnerBtn" class="h-[45px]">
         <SButton variant="info"> Yangilik qo'shish</SButton>
       </div>
     </div>
     <div class="flex justify-between gap-4 mt-4">
-      <FormInput
-        v-model="winnerData.link"
-        type="string"
-        :error="$v.link.$error"
-        label="Url"
-        placeholder="Url"
-        class="w-full"
-      />
       <UploadImages
         ref="removeImg"
         :img="editImages"
@@ -26,13 +18,21 @@
         label="Rasm yuklash"
         :error="$v.imageId.$error"
       />
+      <FormInput
+        v-model="winnerData.link"
+        type="string"
+        :error="$v.link.$error"
+        label="Url"
+        placeholder="Url"
+        class="w-full"
+      />
     </div>
     <table class="w-full text-sm text-left text-gray-500 mt-4">
       <thead class="text-xs text-gray-700 uppercase bg-gray-50">
         <tr>
           <th scope="col" class="p-4">#</th>
-          <th scope="col" class="px-6 py-3">Yangilik haqida</th>
           <th scope="col" class="px-6 py-3">Yanglik rasmi</th>
+          <th scope="col" class="px-6 py-3">Yangilik url</th>
           <th scope="col" class="px-6 py-3 text-end">Amallar</th>
         </tr>
       </thead>
@@ -45,11 +45,6 @@
           <td class="w-4 p-4">
             <p class="font-bold cursor-pointer">{{ index + 1 }}.</p>
           </td>
-          <th
-            class="test-name px-6 py-4 font-medium text-gray-900 whitespace-nowrap max-w-[350px] break-words overflow-x-scroll"
-          >
-            {{ item?.link }}
-          </th>
           <th class="font-medium text-gray-900 whitespace-nowrap">
             <img
               :src="item?.image?.url"
@@ -57,13 +52,20 @@
               class="w-[200px] h-[80px] object-contain"
             />
           </th>
+          <th
+            class="test-name px-6 py-4 font-medium text-gray-900 whitespace-nowrap max-w-[350px] break-words overflow-x-scroll"
+          >
+            {{ item?.link }}
+          </th>
           <td class="flex items-center px-6 py-4 space-x-4 justify-end">
-            <div
+            <!-- edit -->
+
+            <!-- <div
               @click="addNewsId(item)"
               class="font-medium text-blue-600 hover:underline cursor-pointer"
             >
               <i class="fa-solid fa-pen-to-square text-[blue] text-[20px]"></i>
-            </div>
+            </div> -->
             <div
               class="font-medium text-red-600 hover:underline cursor-pointer"
               @click="deleteModal(item?.id)"
@@ -103,11 +105,13 @@ import axios from "@/plugins/axios.js";
 const toast = useToast();
 const openDeleteModal = ref(false);
 const ctionModalClose = ref(false);
+const openBtn = ref(false);
 const forDeleteId = ref("");
 const data = ref([]);
 const winnerData = reactive({
   link: "",
   imageId: "",
+  id: null,
 });
 
 const rules = computed(() => {
@@ -122,7 +126,12 @@ function imageValu(e) {
   formData.append("file", e);
   axios.post("media/upload", formData).then((res) => {
     winnerData.imageId = res.data.id;
-  });
+    if ((res.status = 201)) {
+      openBtn.value = true;
+    }
+  }).catch(()=>{
+    toast.error('Rasm tanlanmadi qayta tanlang !')
+  })
 }
 
 // post news api
@@ -131,20 +140,35 @@ const removeImg = ref();
 const addPartnerBtn = async () => {
   $v.value.$validate();
   if (!$v.value.$error) {
-    try {
-      const newsData = {
-        link: winnerData.link,
-        imageId: winnerData.imageId,
-      };
-      const news = await axios.post("/news", newsData);
-      toast.success("Yangliklar qo'shildi !");
-    } catch (error) {
-      console.log(error);
-    } finally {
-      (winnerData.link = ""), (winnerData.imageId = "");
-      removeImg.value.removeImage();
-      $v.value.$reset();
-      getNews();
+    if (winnerData.id === null) {
+      try {
+        const newsData = {
+          link: winnerData.link,
+          imageId: winnerData.imageId,
+        };
+        const news = await axios.post("/news/create", newsData);
+        openBtn.value = false;
+        toast.success("Yangliklar qo'shildi !");
+      } catch (error) {
+        console.log(error);
+      } finally {
+        (winnerData.link = ""), (winnerData.imageId = "");
+        removeImg.value.removeImage();
+        $v.value.$reset();
+        getNews();
+      }
+    } else {
+      try {
+        const dataForEdit = {
+          id: winnerData.id,
+          link: winnerData.link,
+          imageId: winnerData.imageId,
+        };
+        const editNews = await axios.put(`/news/update`, dataForEdit);
+        console.log(editNews);
+      } catch (error) {
+        console.log(error);
+      }
     }
   }
 };
@@ -166,11 +190,11 @@ function deleteModal(item) {
 }
 
 // delete news api
-
 async function deleted() {
   try {
     const deleteNews = await axios.delete(`news/${forDeleteId.value}`);
     console.log(deleteNews);
+    toast.error("Yangilik o'chirilchi !");
   } catch (error) {
     console.log(error);
   } finally {
@@ -179,10 +203,11 @@ async function deleted() {
 }
 
 // edit news api
-const editImages = ref("")
+const editImages = ref("");
 function addNewsId(item) {
   editImages.value = item.image.url;
   winnerData.link = item.link;
+  winnerData.id = item.id;
 }
 
 onMounted(() => {

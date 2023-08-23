@@ -181,12 +181,11 @@ const image = reactive({
   file: null,
 });
 
-watch(()=>props.img,
-  (e)=>{
-    console.log(e,"sdsd");
-    image.url=e
-  }
-)
+// watch(()=>props.img,
+//   (e)=>{
+//     image.url=e
+//   }
+// )
 
 let imageName = ref("");
 const handleFile = (event: any) => {
