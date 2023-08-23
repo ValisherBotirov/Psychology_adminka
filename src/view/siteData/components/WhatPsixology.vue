@@ -113,7 +113,6 @@ async function addWinnerBtn() {
         text: aboutData.text,
       };
       const postWhatPsixology = await axios.post("/text", data);
-      console.log(postWhatPsixology);
       getWhatPsix();
       toast.success("tekist qo'shildi !");
     } catch (error) {
