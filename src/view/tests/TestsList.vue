@@ -9,12 +9,7 @@
       </router-link>
     </div>
     <div class="flex items-center gap-4 mt-4">
-      <SingleSelect
-        v-model="categoryValue"
-        placeholder="Kategoriyani tanlang"
-        :data="categoryData"
-        class="w-full"
-      />
+
       <SingleSelect
         v-model="subcategoryValue"
         placeholder="Test nomini tanlang"
@@ -78,9 +73,14 @@ import SButton from "@/components/buttons/SButton.vue";
 import SingleSelect from "@/components/select/SingleSelect.vue";
 import DeleteModal from "@/components/modal/DeleteModal.vue";
 
-import { ref } from "vue";
+import {computed, ref} from "vue";
 import { useToast } from "vue-toastification";
 import { useRoute, useRouter } from "vue-router";
+
+import { useCategoryStore } from "@/store/categories.js";
+import {onMounted} from "@vue/runtime-core";
+
+const categoryStore = useCategoryStore();
 
 const toast = useToast();
 const router = useRouter();
@@ -88,40 +88,18 @@ const route = useRoute();
 
 const openDeleteModal = ref(false);
 
-const categoryData = [
-  {
-    value: "child",
-    label: "Bolalar uchun",
-  },
-  {
-    value: "child2",
-    label: "16 yoshdan kattalar uchun",
-  },
-  {
-    value: "child3",
-    label: "Kattalar uchun",
-  },
-];
-const categoryValue = ref(categoryData[0].value);
-const subcategoryData = [
-  {
-    value: "sub",
-    label: "Birinchi test",
-  },
-  {
-    value: "sub2",
-    label: "Ikkinchi test",
-  },
-  {
-    value: "sub3",
-    label: "Uchunchi test",
-  },
-  {
-    value: "sub4",
-    label: "To'rtinchi test",
-  },
-];
-const subcategoryValue = ref(subcategoryData[0].value);
+
+const subcategoryValue = ref("");
+
+const subcategoryData = computed(() =>
+    categoryStore.subCategories.map((el) => {
+        return {
+            value: el.id,
+            label: el.title,
+        };
+    })
+);
+
 
 // test data
 
@@ -189,6 +167,10 @@ function getDeleteId(item) {
 function deleteTest() {
   toast.info(`${itemId.value} delete test`);
 }
+
+onMounted(()=>{
+    categoryStore.fetchSubCategoryAll();
+})
 </script>
 
 <style>
