@@ -120,13 +120,25 @@
         <RouterLink
           class="flex items-center px-6 py-2 mt-4 text-gray-500 hover:bg-gray-700 hover:bg-opacity-25 hover:text-gray-100"
           :class="
+            route.path.includes('/massage')
+              ? 'text-gray-100 bg-opacity-25 bg-gray-700'
+              : 'text-gray-500'
+          "
+          to="/massage"
+        >
+          <i class="fa-solid fa-comment-sms"></i>
+          <span class="mx-3">Habarlar</span>
+        </RouterLink>
+        <RouterLink
+          class="flex items-center px-6 py-2 mt-4 text-gray-500 hover:bg-gray-700 hover:bg-opacity-25 hover:text-gray-100"
+          :class="
             route.path.includes('/site-data')
               ? 'text-gray-100 bg-opacity-25 bg-gray-700'
               : 'text-gray-500'
           "
           to="/site-data"
         >
-        <i class="fa-solid fa-folder-plus"></i>
+          <i class="fa-solid fa-folder-plus"></i>
           <span class="mx-3">Boshqalar</span>
         </RouterLink>
       </div>

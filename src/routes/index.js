@@ -34,6 +34,12 @@ const routes = [
     meta: { roles: ["ADMIN"] },
   },
   {
+    path: "/massage",
+    name: "massage",
+    component: () => import("@/view/massage/Massage.vue"),
+    meta: { roles: ["ADMIN"] },
+  },
+  {
     path: "/test",
     name: "TestCreate",
     component: () => import("@/view/tests/CreateTest.vue"),

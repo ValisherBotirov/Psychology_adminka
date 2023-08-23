@@ -9,11 +9,11 @@
       </router-link>
     </div>
     <div class="flex items-center gap-4 mt-4">
-
       <SingleSelect
         v-model="subcategoryValue"
         placeholder="Test nomini tanlang"
         :data="subcategoryData"
+        @changeSelect="getList"
         class="w-full"
       />
     </div>
@@ -38,10 +38,10 @@
           <th
             class="test-name px-6 py-4 font-medium text-gray-900 whitespace-nowrap max-w-[350px] break-words overflow-x-scroll"
           >
-            {{ item?.name }}
+            {{ item?.title }}
           </th>
           <th class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
-            {{ item?.type }}
+            {{ item?.testType }}
           </th>
           <td class="flex items-center px-6 py-4 space-x-4 justify-end">
             <div class="cursor-pointer hover:text-blue-700 font-medium"></div>
@@ -73,68 +73,41 @@ import SButton from "@/components/buttons/SButton.vue";
 import SingleSelect from "@/components/select/SingleSelect.vue";
 import DeleteModal from "@/components/modal/DeleteModal.vue";
 
-import {computed, ref} from "vue";
+import { computed, ref } from "vue";
 import { useToast } from "vue-toastification";
 import { useRoute, useRouter } from "vue-router";
 
 import { useCategoryStore } from "@/store/categories.js";
-import {onMounted} from "@vue/runtime-core";
-
+import { onMounted } from "@vue/runtime-core";
+import axios from "@/plugins/axios.js";
 const categoryStore = useCategoryStore();
 
 const toast = useToast();
 const router = useRouter();
 const route = useRoute();
-
 const openDeleteModal = ref(false);
-
-
 const subcategoryValue = ref("");
+const data = ref();
 
 const subcategoryData = computed(() =>
-    categoryStore.subCategories.map((el) => {
-        return {
-            value: el.id,
-            label: el.title,
-        };
-    })
+  categoryStore.subCategories.map((el) => {
+    return {
+      value: el.id,
+      label: el.title,
+    };
+  })
 );
-
-
-// test data
-
-const data = [
-  {
-    id: 1,
-    name: "Birinchi test matni quyidagicha wekfjbwmn cewnvlksnvpos nvijsojvn sdoivdj sdoiv",
-    type: "SINGLE_CHOICE",
-  },
-  {
-    id: 2,
-    name: "Ikkinchi test matni quyidagicha",
-    type: "MULTI_CHOICE",
-  },
-  {
-    id: 3,
-    name: "Uchunchi test matni quyidagicha",
-    type: "SINGLE_CHOICE",
-  },
-  {
-    id: 4,
-    name: "To'rtinchi test matni quyidagicha",
-    type: "WRITE_CHOICE",
-  },
-  {
-    id: 5,
-    name: "BEshinchi test matni quyidagicha",
-    type: "SINGLE_CHOICE",
-  },
-  {
-    id: 6,
-    name: "Olrinchi test matni quyidagicha",
-    type: "MULTI_CHOICE",
-  },
-];
+// get test list
+async function getList() {
+  try {
+    const getData = await axios.get(
+      `/question/get-all-by-test-id/${subcategoryValue.value}`
+    );
+    data.value = getData.data;
+  } catch (error) {
+    console.log(error);
+  }
+}
 
 function editTest(item) {
   console.log(item);
@@ -164,13 +137,19 @@ function getDeleteId(item) {
   openDeleteModal.value = true;
 }
 
-function deleteTest() {
-  toast.info(`${itemId.value} delete test`);
+async function deleteTest() {
+  try {
+    const deleteTest = await axios.delete(`/question/${itemId.value}`);
+    getList();
+    toast.error(`${itemId.value} delete test`);
+  } catch (error) {
+    console.log(error);
+  }
 }
 
-onMounted(()=>{
-    categoryStore.fetchSubCategoryAll();
-})
+onMounted(() => {
+  categoryStore.fetchSubCategoryAll();
+});
 </script>
 
 <style>

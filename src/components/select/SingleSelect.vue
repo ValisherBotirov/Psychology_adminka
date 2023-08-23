@@ -48,10 +48,12 @@ const value = ref(props.modelValue);
 
 const emit = defineEmits<{
   (e: "update:modelValue", value: any): void;
+  (e:"changeSelect")
 }>();
 
 function handleSelect(e) {
   emit("update:modelValue", e);
+  emit("changeSelect")
 }
 </script>
 
