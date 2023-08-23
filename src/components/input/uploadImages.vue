@@ -183,6 +183,7 @@ const image = reactive({
 
 // watch(()=>props.img,
 //   (e)=>{
+//     console.log(e,"sdsd");
 //     image.url=e
 //   }
 // )

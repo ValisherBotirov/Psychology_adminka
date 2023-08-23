@@ -73,13 +73,14 @@
             <Textarea
               custom-class="h-[60px] w-full"
               placeholder="Varinat"
-              v-model="item.optionText"
+              v-model="item.text"
             />
             <UploadImages
               small
+              ref="expose"
               @getBase64="(e) => fetchUploadImagesId(item, e)"
               :inputId="`file${item.id}`"
-              :img="item.image"
+              :img="item.imageID"
             />
           </div>
         </div>
@@ -137,14 +138,14 @@ const form = reactive({
   answerCreateDTOList: [
     {
       id: 1,
-      optionText: "salom",
-      image: "",
+      text: "",
+      imageID: null,
       correct: false,
     },
     {
       id: 2,
-      optionText: "",
-      image: "",
+      text: "",
+      imageID: null,
       correct: false,
     },
   ],
@@ -162,9 +163,10 @@ const $v = useVuelidate(rule, form);
 function addNewOption() {
   const option = {
     id: form.answerCreateDTOList.length + 1,
-    optionText: "",
+    text: "",
     correct: false,
-    image: "",
+    imageID: null,
+      ref:""
   };
   form.answerCreateDTOList.push(option);
 }
@@ -186,14 +188,15 @@ function getQuestionImages(e) {
   });
 }
 
-// media upload images id
-
-function fetchUploadImagesId(item, e) {
+async function fetchUploadImagesId(item,  e) {
   const formData = new FormData();
   formData.append("file", e);
-  axios.post("media/upload", formData).then((res) => {
-    item.image = res.data.id;
-  });
+  await axios.post("media/upload", formData).then((res) => {
+    item.imageID = res.data.id;
+  }).catch((err)=>{
+      toast.error("Rasm yuklashda xatolik yuz berdi!")
+      form.imageID=null
+  })
 }
 function onSubmit() {
   if (!routeId) {

@@ -127,7 +127,7 @@ function onSubmit() {
       })
       .finally(() => {
         setTimeout(() => {
-          window.location.reload();
+          // window.location.reload();
         }, 1000);
       });
   }

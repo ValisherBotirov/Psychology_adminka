@@ -15,6 +15,7 @@
           custom-class="h-[90px]"
           label="Savolni matnini kiriting"
           class="w-full"
+          v-model="form.title"
         />
         <UploadImages
           line
@@ -72,13 +73,13 @@
             <Textarea
               custom-class="h-[60px] w-full"
               placeholder="Varinat"
-              v-model="item.optionText"
+              v-model="item.text"
             />
             <UploadImages
               small
               @getBase64="e => fetchUploadImagesId(item,e)"
               :inputId="`file${item.id}`"
-              :img="item.image"
+              :img="item.imageID"
             />
           </div>
         </div>
@@ -128,19 +129,19 @@ const form = reactive({
   imageID: null,
   testID: "",
   score: "",
-  correctAnswers: [1],
+  correctAnswers: [],
   answerCreateDTOList: [
     {
       id: 1,
-      optionText: "salom",
+      text: "",
       correct: false,
-      image: "",
+      imageID: "",
     },
     {
       id: 2,
-      optionText: "",
+      text: "",
       correct: false,
-      image: "",
+      imageID: "",
     },
   ],
 });
@@ -157,9 +158,9 @@ const $v = useVuelidate(rule, form);
 function addNewOption() {
   const option = {
     id: form.answerCreateDTOList.length + 1,
-    optionText: "",
+    text: "",
     correct: false,
-    image: "",
+    imageID: "",
   };
   form.answerCreateDTOList.push(option);
 }
@@ -189,7 +190,7 @@ function fetchUploadImagesId(item,e){
     const formData = new FormData()
     formData.append("file",e)
     axios.post('media/upload',formData).then((res)=>{
-        item.image = res.data.id
+        item.imageId = res.data.id
     })
 }
 
@@ -219,7 +220,7 @@ function onSubmit() {
               toast.error("Qo'shishda xatolik yuz berdi!")
           }).finally(()=>{
               setTimeout(()=>{
-                  window.location.reload()
+                  // window.location.reload()
               },1000)
           })
       }
