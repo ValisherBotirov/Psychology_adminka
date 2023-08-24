@@ -33,9 +33,9 @@
           <svg
             class="w-6 h-6"
             xmlns="http://www.w3.org/2000/svg"
-            fill="none"
+            fill="#3751FF"
             viewBox="0 0 24 24"
-            stroke="currentColor"
+            stroke="#3751FF"
           >
             <path
               stroke-linecap="round"
@@ -64,9 +64,9 @@
           <svg
             class="w-6 h-6"
             xmlns="http://www.w3.org/2000/svg"
-            fill="none"
+            fill="#3751FF"
             viewBox="0 0 24 24"
-            stroke="currentColor"
+            stroke="#3751FF"
           >
             <path
               stroke-linecap="round"
@@ -87,7 +87,7 @@
           "
           to="/list"
         >
-          <i class="fa-solid fa-circle-question text-xl"></i>
+          <i class="fa-solid fa-circle-question text-xl text-[#3751FF]"></i>
 
           <span class="mx-3">Testlar listi</span>
         </RouterLink>
@@ -103,9 +103,9 @@
           <svg
             class="w-6 h-6"
             xmlns="http://www.w3.org/2000/svg"
-            fill="none"
+            fill="#3751FF"
             viewBox="0 0 24 24"
-            stroke="currentColor"
+            stroke="#3751FF"
           >
             <path
               stroke-linecap="round"
@@ -126,8 +126,17 @@
           "
           to="/massage"
         >
-          <i class="fa-solid fa-comment-sms"></i>
-          <span class="mx-3">Habarlar</span>
+          <i
+            :class="store.coundMassage > 0 ? 'text-[red]' : 'text-[#3751FF]'"
+            class="fa-solid fa-comment-sms relative"
+            ><span
+              class="absolute text-[12px] font-[900] bottom-2 left-4 text-[red]"
+              >{{ store.coundMassage }}</span
+            ></i
+          >
+          <span :class="massage > 0 ? 'text-[red]' : ''" class="mx-3"
+            >Habarlar</span
+          >
         </RouterLink>
         <RouterLink
           class="flex items-center px-6 py-2 mt-4 text-gray-500 hover:bg-gray-700 hover:bg-opacity-25 hover:text-gray-100"
@@ -138,7 +147,7 @@
           "
           to="/site-data"
         >
-          <i class="fa-solid fa-folder-plus"></i>
+          <i class="fa-solid fa-folder-plus text-[#3751FF]"></i>
           <span class="mx-3">Boshqalar</span>
         </RouterLink>
       </div>
@@ -148,7 +157,8 @@
 
 <script setup>
 import { useRoute } from "vue-router";
-
+import { useMassageStore } from "@/store/massage.js";
+const store = useMassageStore();
 const route = useRoute();
 
 const emit = defineEmits(["closeSidebar"]);

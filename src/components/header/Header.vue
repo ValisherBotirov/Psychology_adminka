@@ -44,14 +44,20 @@
           v-show="dropdownOpen"
           class="absolute right-0 z-10 w-48 mt-2 overflow-hidden bg-white rounded-md shadow-xl"
         >
-
-          <router-link to="/profile" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-500 hover:text-white cursor-pointer">
+          <router-link
+            to="/profile"
+            class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-500 hover:text-white cursor-pointer"
+          >
             Profile
           </router-link>
 
-            <router-link to="/login" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-500 hover:text-white cursor-pointer" @click="logout">
-            Logout</router-link>
-
+          <router-link
+            to="/login"
+            class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-500 hover:text-white cursor-pointer"
+            @click="logout"
+          >
+            Logout</router-link
+          >
         </div>
       </div>
     </div>
@@ -60,13 +66,18 @@
 
 <script setup>
 import { RouterLink } from "vue-router";
-import { ref } from "vue";
-import {useAuthStore} from "@/store/auth.js";
+import { ref, onMounted } from "vue";
+import { useAuthStore } from "@/store/auth.js";
+import { useMassageStore } from "@/store/massage.js";
+const store = useMassageStore();
 const emit = defineEmits(["openSidebar2"]);
 // const notificationOpen = ref(false);
 const dropdownOpen = ref(false);
-const  authStore = useAuthStore()
-function logout(){
-    authStore.logOut()
+const authStore = useAuthStore();
+function logout() {
+  authStore.logOut();
 }
+onMounted(() => {
+  store.getNewMassage();
+});
 </script>

@@ -189,6 +189,5 @@ import { PhoneNumberFormatter } from "@/helpers/formatNumber.js";
 import BlockPreloader from "@/components/buttons/BlockPreloader.vue";
 import { computed } from "vue";
 import { useSellerStore } from "@/store/users.js";
-
 const toast = useToast();
 </script>
