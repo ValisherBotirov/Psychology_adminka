@@ -111,14 +111,14 @@ async function getList() {
 
 function editTest(item) {
   console.log(item);
-  switch (item.type) {
-    case "SINGLE_CHOICE":
+  switch (item.testType) {
+    case "CHECKBOX":
       navigateRouter("one", item.id);
       break;
     case "MULTI_CHOICE":
       navigateRouter("more", item.id);
       break;
-    case "WRITE_CHOICE":
+    case "CLOSE_QUESTIONS":
       navigateRouter("close", item.id);
       break;
   }
@@ -129,6 +129,7 @@ function navigateRouter(url, id) {
     path: `/test/${url}`,
     query: { id },
   });
+    console.log("run")
 }
 
 const itemId = ref("");
@@ -141,7 +142,7 @@ async function deleteTest() {
   try {
     const deleteTest = await axios.delete(`/question/${itemId.value}`);
     getList();
-    toast.error(`${itemId.value} delete test`);
+    toast.error("Test muvaffaqiyatli o'chirildi!");
   } catch (error) {
     console.log(error);
   }
@@ -149,6 +150,7 @@ async function deleteTest() {
 
 onMounted(() => {
   categoryStore.fetchSubCategoryAll();
+  toast.info("Tets kategoriyalaridan birini tanlang!")
 });
 </script>
 

@@ -22,6 +22,7 @@
           class="w-full"
           label="Savol rasmini yuklash (ixtiyoriy)"
           @getBase64="getQuestionImages"
+          :img="form.image"
         />
       </div>
       <div class="flex items-end gap-10 my-4">
@@ -80,7 +81,7 @@
               ref="expose"
               @getBase64="(e) => fetchUploadImagesId(item, e)"
               :inputId="`file${item.id}`"
-              :img="item.imageID"
+              :img="item.image"
             />
           </div>
         </div>
@@ -131,6 +132,7 @@ const form = reactive({
   title: "",
   imageID: null,
   testID: "",
+    image:"",
   score: "",
   correct: null,
   correctAnswers: [],
@@ -140,12 +142,14 @@ const form = reactive({
       id: 1,
       text: "",
       imageID: null,
+        image:"",
       correct: false,
     },
     {
       id: 2,
       text: "",
       imageID: null,
+        image:"",
       correct: false,
     },
   ],
@@ -166,7 +170,7 @@ function addNewOption() {
     text: "",
     correct: false,
     imageID: null,
-      ref:""
+      image:"",
   };
   form.answerCreateDTOList.push(option);
 }

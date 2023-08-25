@@ -7,8 +7,9 @@
     >
     <textarea
       id="password"
-      v-model="inputVal"
+      :value="modelValue"
       :placeholder="placeholder"
+      @input="handleInput"
       :class="[error ? '!border-[red]' : 'border-gray-500  focus-within:border-[blue]',customClass]"
       class="shadow-sm bg-gray-50 border text-gray-900 outline-0 text-sm rounded-[6px] resize-none h-[140px]  block w-full p-2.5 "
     >
@@ -42,14 +43,11 @@ placeholder:{
   },
 });
 
-const emit = defineEmits(["on-change"]);
+const emit = defineEmits(["update:modelValue"]);
 
-const inputVal = ref(props.modelValue);
 
-watch(
-  () => inputVal.value,
-  (val) => {
-    emit("update:modelValue", val);
-  }
-);
+function handleInput(e){
+    emit("update:modelValue", e.target.value);
+}
+
 </script>

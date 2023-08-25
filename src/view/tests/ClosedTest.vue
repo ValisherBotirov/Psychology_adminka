@@ -1,6 +1,7 @@
 <template>
   <div>
     <div class="border border-gray-600 py-4 px-5 bg-white">
+        <pre>{{arr}}</pre>
       <div class="flex items-center gap-4 mt-1 mb-4" v-if="!routeId">
         <SingleSelect
           v-model="form.testID"
@@ -22,6 +23,7 @@
           class="w-full"
           label="Savol rasmini yuklash (ixtiyoriy)"
           @getBase64="getQuestionImages"
+          :img="form.image"
         />
       </div>
       <div class="flex items-center mt-4 gap-4">
@@ -82,11 +84,13 @@ const subcategoryData = computed(() =>
 
 const routeId = route.query.id;
 
+
 const form = reactive({
   testType: "CLOSE_QUESTIONS",
   title: "",
   imageID: "",
   testID: "",
+    image:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQNTLA4I58mwSWA-ysztPuru64_OfwfR4PmajVdgF3-Cw&s",
   correctCloseAnswer: "",
   score: null,
 });
@@ -113,8 +117,7 @@ function getQuestionImages(e) {
 function onSubmit() {
   if (!routeId) {
     $v.value.$validate();
-  }
-  if (!$v.value.$error) {
+    if (!$v.value.$error) {
     console.log(form, "opt");
     axios
       .post("/question", form)
@@ -131,9 +134,61 @@ function onSubmit() {
         }, 1000);
       });
   }
+  }
+  else if(routeId){
+      $v.value.$validate();
+      if (typeof routeId === "string") {
+          form.testID = routeId
+      }
+      console.log("edit")
+      if (!$v.value.$error) {
+          const editObj = {
+              id:+routeId,
+              title:form.title,
+              imageID:form.imageID,
+              correctCloseAnswer:form.correctCloseAnswer,
+              score:form.score,
+              answerUpdateDTOList:null,
+              correctAnswers:null,
+          }
+          console.log(editObj, "opt");
+          axios
+              .patch("/question", editObj)
+              .then((res) => {
+                  console.log(res);
+                  toast.success("Test muvaffaqiyatli tahrirlandi");
+              })
+              .catch((err) => {
+                  toast.error("Tahrirlashda xatolik yuz berdi!");
+              })
+              .finally(() => {
+                  setTimeout(() => {
+                      // window.location.reload();
+                  }, 1000);
+              });
+      }
+  }
+}
+
+const arr  = ref([])
+function editTest(){
+    axios.get(`/question/get/${route.query.id}`).then((res)=>{
+        console.log(res)
+        arr.value = res.data
+        form.title = res.data.questionDTO.title
+        form.correctCloseAnswer = res.data.closeAnswer
+        form.score = res.data.questionDTO.score
+        form.image = res.data.questionDTO.image?.url
+        form.imageID  = res.data.questionDTO.image?.id
+    }).catch((err)=>{
+        console.log(err)
+    })
 }
 
 onMounted(() => {
   categoryStore.fetchSubCategoryAll();
+  if(routeId){
+      editTest()
+  }
 });
 </script>

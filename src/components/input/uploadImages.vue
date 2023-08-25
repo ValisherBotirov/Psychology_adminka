@@ -31,6 +31,7 @@ Code
           class="w-full h-full flex-center relative object-cover"
         >
           <img
+                  :id="`img${inputId}`"
             :src="image.url"
             alt="avatar"
             class="w-full h-full object-cover relative z-0 rounded-[10px]"
@@ -76,6 +77,7 @@ Code
           class="w-[100px] h-[100px] flex-center relative object-cover"
         >
           <img
+                  :id="`img${inputId}`"
             :src="image.url"
             alt="avatar"
             class="w-[100px] h-[100px] object-cover relative z-0 rounded-[50%]"
@@ -122,6 +124,7 @@ Code
         >
           <div class="flex gap-4 items-center">
             <img
+              :id="`img${inputId}`"
               :src="image.url"
               alt="avatar"
               class="w-[52px] h-[52px] object-cover relative z-0 rounded-[4px]"
@@ -181,12 +184,13 @@ const image = reactive({
   file: null,
 });
 
-// watch(()=>props.img,
-//   (e)=>{
-//     console.log(e,"sdsd");
-//     image.url=e
-//   }
-// )
+watch(()=>props.img,
+  (e)=>{
+      // const src = document.getElementById(`img${props.inputId}`);
+      // console.log(src,"sdsd");
+      image.url = e
+  }
+)
 
 let imageName = ref("");
 const handleFile = (event: any) => {
