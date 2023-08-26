@@ -115,7 +115,7 @@ function editTest(item) {
     case "CHECKBOX":
       navigateRouter("one", item.id);
       break;
-    case "MULTI_CHOICE":
+    case "MULTIPLE_CHOICE":
       navigateRouter("more", item.id);
       break;
     case "CLOSE_QUESTIONS":
@@ -142,7 +142,7 @@ async function deleteTest() {
   try {
     const deleteTest = await axios.delete(`/question/${itemId.value}`);
     getList();
-    toast.error("Test muvaffaqiyatli o'chirildi!");
+    toast.success("Test muvaffaqiyatli o'chirildi!");
   } catch (error) {
     console.log(error);
   }

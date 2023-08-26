@@ -107,7 +107,7 @@ import {computed, reactive} from "vue";
 import SingleSelect from "@/components/select/SingleSelect.vue";
 import {required} from "@vuelidate/validators";
 import {useVuelidate} from "@vuelidate/core";
-import {useRoute} from "vue-router";
+import {useRoute, useRouter} from "vue-router";
 import axios from "../../plugins/axios.js";
 import {useCategoryStore} from "@/store/categories.js";
 
@@ -116,6 +116,7 @@ const categoryStore = useCategoryStore();
 const toast = useToast();
 
 const route = useRoute();
+const router = useRouter()
 
 const subcategoryData = computed(() =>
     categoryStore.subCategories.map((el) => {
@@ -248,6 +249,9 @@ function onSubmit() {
                     .then((res) => {
                         console.log(res);
                         toast.success("Test muvaffaqiyatli tahrirlandi");
+                        setTimeout(()=>{
+                            router.push("/list")
+                        },1000)
                     })
                     .catch((err) => {
                         toast.error("Tahrirlashda xatolik yuz berdi!");

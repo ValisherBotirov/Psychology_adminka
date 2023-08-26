@@ -159,7 +159,7 @@ function onSubmit() {
                   toast.success("Test muvaffaqiyatli tahrirlandi");
                   setTimeout(()=>{
                       router.push("/list")
-                  })
+                  },1000)
               })
               .catch((err) => {
                   toast.error("Tahrirlashda xatolik yuz berdi!");
