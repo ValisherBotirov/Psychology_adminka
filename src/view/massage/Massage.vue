@@ -120,7 +120,6 @@ async function unread(item) {
 }
 
 // api delete massage
-
 function idForDelete(item) {
   idForDeleted.value = item;
   openDeleteModal.value = true;
