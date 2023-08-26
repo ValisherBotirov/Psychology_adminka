@@ -1,7 +1,6 @@
 <template>
   <div>
     <div class="border border-gray-600 py-4 px-5 bg-white">
-        <pre>{{arr}}</pre>
       <div class="flex items-center gap-4 mt-1 mb-4" v-if="!routeId">
         <SingleSelect
           v-model="form.testID"
@@ -64,7 +63,7 @@ import { computed, reactive } from "vue";
 import { required } from "@vuelidate/validators";
 import { useVuelidate } from "@vuelidate/core";
 import SingleSelect from "@/components/select/SingleSelect.vue";
-import { useRoute } from "vue-router";
+import {useRoute, useRouter} from "vue-router";
 import { useCategoryStore } from "@/store/categories.js";
 import axios from "../../plugins/axios.js";
 
@@ -72,6 +71,7 @@ const categoryStore = useCategoryStore();
 
 const toast = useToast();
 const route = useRoute();
+const router = useRouter()
 
 const subcategoryData = computed(() =>
   categoryStore.subCategories.map((el) => {
@@ -157,24 +157,20 @@ function onSubmit() {
               .then((res) => {
                   console.log(res);
                   toast.success("Test muvaffaqiyatli tahrirlandi");
+                  setTimeout(()=>{
+                      router.push("/list")
+                  })
               })
               .catch((err) => {
                   toast.error("Tahrirlashda xatolik yuz berdi!");
               })
-              .finally(() => {
-                  setTimeout(() => {
-                      // window.location.reload();
-                  }, 1000);
-              });
+
       }
   }
 }
 
-const arr  = ref([])
 function editTest(){
     axios.get(`/question/get/${route.query.id}`).then((res)=>{
-        console.log(res)
-        arr.value = res.data
         form.title = res.data.questionDTO.title
         form.correctCloseAnswer = res.data.closeAnswer
         form.score = res.data.questionDTO.score
