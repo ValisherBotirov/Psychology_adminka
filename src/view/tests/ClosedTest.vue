@@ -90,7 +90,7 @@ const form = reactive({
   title: "",
   imageID: "",
   testID: "",
-    image:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQNTLA4I58mwSWA-ysztPuru64_OfwfR4PmajVdgF3-Cw&s",
+    image:"",
   correctCloseAnswer: "",
   score: null,
 });
