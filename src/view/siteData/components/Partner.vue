@@ -190,7 +190,7 @@ async function deletedPartners() {
   try {
     const deletePartner = await axios.delete(`/partners/${forIdDelete.value}`);
     getPartner();
-    toast.error("Hamkor o'chirildi !");
+    toast.success("Hamkor o'chirildi !");
   } catch (error) {
     toast.error("Xatolik mavjud !");
     console.log(error);

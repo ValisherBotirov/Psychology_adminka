@@ -11,7 +11,6 @@
     <div class="flex justify-between gap-4 mt-4">
       <UploadImages
         ref="removeImg"
-        :img="editImages"
         @getBase64="imageValu"
         line
         class="w-full"
@@ -124,14 +123,19 @@ const rules = computed(() => {
 function imageValu(e) {
   const formData = new FormData();
   formData.append("file", e);
-  axios.post("media/upload", formData).then((res) => {
-    winnerData.imageId = res.data.id;
-    if ((res.status = 201)) {
-      openBtn.value = true;
-    }
-  }).catch(()=>{
-    toast.error('Rasm tanlanmadi qayta tanlang !')
-  })
+  axios
+    .post("media/upload", formData)
+    .then((res) => {
+      winnerData.imageId = res.data.id;
+      if ((res.status = 201)) {
+        openBtn.value = true;
+      } else {
+        openBtn.value = false;
+      }
+    })
+    .catch(() => {
+      toast.error("Rasm tanlanmadi qayta tanlang !");
+    });
 }
 
 // post news api
@@ -194,7 +198,7 @@ async function deleted() {
   try {
     const deleteNews = await axios.delete(`news/${forDeleteId.value}`);
     console.log(deleteNews);
-    toast.error("Yangilik o'chirilchi !");
+    toast.success("Yangilik o'chirilchi !");
   } catch (error) {
     console.log(error);
   } finally {
@@ -203,12 +207,12 @@ async function deleted() {
 }
 
 // edit news api
-const editImages = ref("");
-function addNewsId(item) {
-  editImages.value = item.image.url;
-  winnerData.link = item.link;
-  winnerData.id = item.id;
-}
+// const editImages = ref("");
+// function addNewsId(item) {
+//   editImages.value = item.image.url;
+//   winnerData.link = item.link;
+//   winnerData.id = item.id;
+// }
 
 onMounted(() => {
   getNews();

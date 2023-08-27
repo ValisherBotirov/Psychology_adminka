@@ -213,7 +213,7 @@ async function studentDelete() {
     const deletedStudentApi = await axios.delete(
       `/active-students/${deleteId.value}`
     );
-    toast.error("O'quvchi o'chirildi !");
+    toast.success("O'quvchi o'chirildi !");
     getWinner();
   } catch (error) {
     console.log(error);

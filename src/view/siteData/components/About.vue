@@ -4,31 +4,42 @@
       <h3 class="text-gray-700 text-3xl font-medium text-center">
         Biz haqimizda bo'limi
       </h3>
-      <div @click="addWinnerBtn">
+      <div v-if="openBtn" @click="addWinnerBtn">
         <SButton variant="info"> Tekist qo'shish</SButton>
       </div>
     </div>
-    <div class="flex  justify-between gap-4 mt-4">
-      <FormInput
-        v-model="aboutData.title"
-        :error="$v.title.$error"
-        label="Title"
-        placeholder="title"
+    <div class="flex">
+      <UploadImages
+        ref="removeImg"
+        @getBase64="imageValu"
+        line
         class="w-full"
+        label="Rasm yuklash"
+        :error="$v.imageId.$error"
       />
-      <Textarea
-        custom-class="h-[150px]"
-        label="Biz haqqimizda tekst"
-        placeholder="Biz haqimizda..."
-        class="w-full"
-      />
+      <div class="flex items-center w-[50%]">
+        <img
+          :src="image"
+          alt="image"
+          class="w-[150px] h-[150px] rounded-[50%] mx-auto"
+        />
+        <div class="cursor-pointer" @click="openDeleteModal = true">
+          <i class="fa-solid fa-trash text-[red] text-[20px]"></i>
+        </div>
+      </div>
     </div>
+    <FormInput
+      v-model="aboutData.title"
+      :error="$v.title.$error"
+      label="Natijalar"
+      placeholder="Natijalar"
+      class="w-full mt-10"
+    />
     <table class="w-full text-sm text-left text-gray-500 mt-4">
       <thead class="text-xs text-gray-700 uppercase bg-gray-50">
         <tr>
           <th scope="col" class="p-4">#</th>
-          <th scope="col" class="px-6 py-3">Title</th>
-          <th scope="col" class="px-6 py-3">Biz haqimizda</th>
+          <th scope="col" class="px-6 py-3">Natijalar</th>
           <th scope="col" class="px-6 py-3 text-end">Amallar</th>
         </tr>
       </thead>
@@ -45,9 +56,6 @@
             class="test-name px-6 py-4 font-medium text-gray-900 whitespace-nowrap max-w-[450px] break-words overflow-x-scroll"
           >
             {{ item?.name }}
-          </th>
-          <th class="font-medium text-gray-900">
-            {{ item?.text }}
           </th>
           <td class="flex items-center px-6 py-4 space-x-4 justify-end">
             <div class="cursor-pointer hover:text-blue-700 font-medium"></div>
@@ -75,24 +83,27 @@
 <script setup lang="ts">
 import SButton from "@/components/buttons/SButton.vue";
 import DeleteModal from "@/components/modal/DeleteModal.vue";
-import Textarea from "@/components/input/textarea.vue";
 import { ref, reactive, computed } from "vue";
 import { useToast } from "vue-toastification";
 import FormInput from "@/components/input/FormInput.vue";
-
-// validator
+import UploadImages from "@/components/input/uploadImages.vue";
+import axios from "@/plugins/axios.js";
 import { useVuelidate } from "@vuelidate/core";
 import { required, minLength } from "@vuelidate/validators";
+import image from "@/assets/image/Shahzod.jpg";
+const toast = useToast();
+const openDeleteModal = ref(false);
+const openBtn = ref(false);
 
 const aboutData = reactive({
   title: "",
-  text: "",
+  imageId: "",
 });
 
 const rules = computed(() => {
   return {
     title: { required, minLength: minLength(3) },
-    text: { required, minLength: minLength(3) },
+    imageId: { required, minLength: minLength(3) },
   };
 });
 
@@ -105,15 +116,28 @@ const addWinnerBtn = async () => {
     } catch (error) {
       console.log(error);
     } finally {
-      aboutData.title = "";
-      aboutData.text = "";
       $v.value.$reset();
     }
   }
 };
 
-const toast = useToast();
-const openDeleteModal = ref(false);
+function imageValu(e) {
+  const formData = new FormData();
+  formData.append("file", e);
+  axios
+    .post("media/upload", formData)
+    .then((res) => {
+      aboutData.imageId = res.data.id;
+      if ((res.status = 201)) {
+        openBtn.value = true;
+      } else {
+        openBtn.value = false;
+      }
+    })
+    .catch(() => {
+      toast.error("Rasm tanlanmadi, qayta tanlang !");
+    });
+}
 // test data
 const data = [
   {
@@ -121,8 +145,8 @@ const data = [
     name: "Biz emas - natijalarimiz gapirsin !",
     text: `lorem10 zo'r ekan daxshat bomba  ekanmiz voooy dooodddddd lorem10 zo'r ekan daxshat bomba ekanmiz voooy dooodddddd lorem10 zo'r
     ekan daxshat bomba ekanmiz voooy dooodddddd lorem10 zo'r
-    ekan daxshat bomba ekanmiz voooy dooodddddd 
-    lorem10 zo'r ekan daxshat bomba ekanmiz 
+    ekan daxshat bomba ekanmiz voooy dooodddddd
+    lorem10 zo'r ekan daxshat bomba ekanmiz
     voooy dooodddddd`,
   },
 ];
