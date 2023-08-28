@@ -11,9 +11,11 @@
     <div class="flex justify-between gap-4 mt-4">
       <UploadImages
         ref="removeImg"
+        :img="image"
         @getBase64="imageValu"
         line
         class="w-full"
+        inputId="1"
         label="Rasm yuklash"
         :error="$v.imageId.$error"
       />
@@ -106,6 +108,7 @@ const openDeleteModal = ref(false);
 const ctionModalClose = ref(false);
 const openBtn = ref(false);
 const forDeleteId = ref("");
+const image = ref("");
 const data = ref([]);
 const winnerData = reactive({
   link: "",

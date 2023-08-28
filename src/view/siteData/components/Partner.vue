@@ -11,8 +11,8 @@
     <div class="flex justify-between gap-4 mt-4">
       <UploadImages
         ref="removeImg"
-        :img="winnerData.imageId"
-        inputId="2"
+        :img="image"
+        inputId="3"
         @getBase64="imageValu"
         line
         class="w-full"
@@ -117,6 +117,7 @@ const toast = useToast();
 const openBtn = ref(false);
 const openDeleteModal = ref(false);
 const data = ref();
+const image = ref("");
 const forIdDelete = ref();
 const winnerData = reactive({
   name: "",
@@ -136,14 +137,17 @@ const rules = computed(() => {
 function imageValu(e) {
   const formData = new FormData();
   formData.append("file", e);
-  axios.post("media/upload", formData).then((res) => {
-    winnerData.imageId = res.data.id;
-    if (res.status = 201) {
-      openBtn.value = true
-    }
-  }).catch(()=>{
-    toast.error('Rasm tanlanmadi, qayta tanlang !')
-  });
+  axios
+    .post("media/upload", formData)
+    .then((res) => {
+      winnerData.imageId = res.data.id;
+      if ((res.status = 201)) {
+        openBtn.value = true;
+      }
+    })
+    .catch(() => {
+      toast.error("Rasm tanlanmadi, qayta tanlang !");
+    });
 }
 const $v = useVuelidate(rules, winnerData);
 const removeImg = ref();

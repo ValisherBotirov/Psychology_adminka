@@ -11,9 +11,9 @@
     <div class="flex items-center justify-between gap-4 mt-4">
       <UploadImages
         ref="ok"
-        :img="winnerData.imageId"
+        :img="image"
         @getBase64="imageValu"
-        inputId="3"
+        inputId="4"
         line
         class="w-full"
         label="Rasm yuklash"
@@ -119,6 +119,7 @@ import { useVuelidate } from "@vuelidate/core";
 import { required, minLength, maxLength } from "@vuelidate/validators";
 import axios from "@/plugins/axios.js";
 
+const image = ref("");
 const toast = useToast();
 const openDeleteModal = ref(false);
 const openBtn = ref(false);

@@ -21,8 +21,8 @@
         label="Psixologiya nima teksti"
         placeholder="Psixologiya nima..."
         class="w-full"
-        v-model="aboutData.text"
-        :error="$v.text.$error"
+        v-model="aboutData.content"
+        :error="$v.content.$error"
       />
     </div>
     <table class="w-full text-sm text-left text-gray-500 mt-4">
@@ -31,44 +31,21 @@
           <th scope="col" class="p-4">#</th>
           <th scope="col" class="px-6 py-3">Title</th>
           <th scope="col" class="px-6 py-3">Psixologiya haqida</th>
-          <th scope="col" class="px-6 py-3 text-end">Amallar</th>
         </tr>
       </thead>
       <tbody>
-        <tr
-          class="bg-white border-b hover:bg-gray-50"
-          v-for="(item, index) in data"
-          :key="index"
-        >
+        <tr class="bg-white border-b hover:bg-gray-50">
           <td class="w-4 p-4">
-            <p class="font-bold cursor-pointer">{{ index + 1 }}.</p>
+            <p class="font-bold cursor-pointer">1</p>
           </td>
           <th
             class="test-name px-6 py-4 font-medium text-gray-900 whitespace-nowrap max-w-[450px] break-words overflow-x-scroll"
           >
-            {{ item?.title }}
+            {{ data?.title }}
           </th>
           <th class="font-medium text-gray-900">
-            {{ item?.text }}
+            {{ data?.content }}
           </th>
-          <td class="flex items-center px-6 py-4 space-x-4 justify-end">
-            <div class="cursor-pointer hover:text-blue-700 font-medium"></div>
-            <div
-              class="font-medium text-blue-600 hover:underline cursor-pointer"
-            >
-              <i class="fa-solid fa-pen-to-square text-[blue] text-[20px]"></i>
-            </div>
-            <div
-              class="font-medium text-red-600 hover:underline cursor-pointer"
-              @click="openDeleteModal = true"
-            >
-              <i class="fa-solid fa-trash text-[red] text-[20px]"></i>
-            </div>
-            <DeleteModal
-              :isOpen="openDeleteModal"
-              @closeModal="(e) => (openDeleteModal = e)"
-            />
-          </td>
         </tr>
       </tbody>
     </table>
@@ -88,17 +65,16 @@ import axios from "@/plugins/axios.js";
 const data = ref();
 const toast = useToast();
 const openDeleteModal = ref(false);
-const ifForDelete = ref();
 const ifForEdit = ref();
 const aboutData = reactive({
   title: "",
-  text: "",
+  content: "",
 });
 
 const rules = computed(() => {
   return {
     title: { required, minLength: minLength(3) },
-    text: { required, minLength: minLength(3) },
+    content: { required, minLength: minLength(3) },
   };
 });
 
@@ -110,17 +86,17 @@ async function addWinnerBtn() {
     try {
       const data = {
         title: aboutData.title,
-        text: aboutData.text,
+        content: aboutData.content,
       };
-      const postWhatPsixology = await axios.post("/text", data);
+      const postWhatPsixology = await axios.post("/article/post", data);
       getWhatPsix();
-      toast.success("tekist qo'shildi !");
+      toast.success("Tekist qo'shildi !");
     } catch (error) {
       toast.error("Xatolik mavjud !");
       console.log(error);
     } finally {
       aboutData.title = "";
-      aboutData.text = "";
+      aboutData.content = "";
       $v.value.$reset();
     }
   }
@@ -129,7 +105,7 @@ async function addWinnerBtn() {
 // get What Psixology api
 async function getWhatPsix() {
   try {
-    const getWhatPsixAll = await axios.get("text/get-all");
+    const getWhatPsixAll = await axios.get("/article");
     data.value = getWhatPsixAll.data;
   } catch (error) {
     console.log(error);
