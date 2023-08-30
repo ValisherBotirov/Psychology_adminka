@@ -131,7 +131,7 @@ async function deleteMassage() {
     );
     store.getMassage();
     store.getNewMassage();
-    toast.error("Habar o'chirildi !");
+    toast.success("Habar o'chirildi !");
   } catch (error) {
     console.log(error);
   }

@@ -105,7 +105,7 @@ async function addWinnerBtn() {
 // get What Psixology api
 async function getWhatPsix() {
   try {
-    const getWhatPsixAll = await axios.get("/article");
+    const getWhatPsixAll = await axios.get("/article/get");
     data.value = getWhatPsixAll.data;
   } catch (error) {
     console.log(error);

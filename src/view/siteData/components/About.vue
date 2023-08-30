@@ -20,7 +20,7 @@
         />
         <div class="w-[50%] flex justify-end">
           <img
-            :src="dataList?.image?.url"
+            :src="dataRezult?.image?.url"
             alt="image"
             class="w-[150px] h-[150px] rounded-[50%]"
           />
@@ -41,14 +41,13 @@
       class="w-full"
     />
     <div class="my-4">
-      <h1 class="font-medium cursor-pointer"># 1 {{ dataList?.slogan }}</h1>
+      <h1 class="font-medium cursor-pointer"># 1 {{ dataRezult?.slogan }}</h1>
     </div>
-    <div @click="addWinnerBtn" class="flex justify-end mt-5">
+    <div @click="rezults" class="flex justify-end mt-5">
       <SButton variant="info"> Natija qo'shish</SButton>
     </div>
     <FormInput
-      v-model="aboutData.achievements"
-      :error="$v.achievements.$error"
+      v-model="achievement"
       label="Natijalar"
       placeholder="Natijalar"
       class="w-full"
@@ -68,10 +67,11 @@
           </td>
           <th
             class="test-name px-6 py-4 font-medium text-gray-900 whitespace-nowrap max-w-[450px] break-words overflow-x-scroll"
-            v-for="item in dataList?.achievements"
+            v-for="item in dataList"
             :key="item?.id"
           >
-            {{ item }}
+            <!-- {{ item }} -->
+            <pre>{{ dataList }}</pre>
           </th>
           <td class="flex px-6 py-4 space-x-4 justify-end">
             <div class="cursor-pointer hover:text-blue-700 font-medium"></div>
@@ -96,7 +96,7 @@
     </table>
   </div>
 </template>
-<script setup lang="ts">
+<script setup>
 import SButton from "@/components/buttons/SButton.vue";
 import DeleteModal from "@/components/modal/DeleteModal.vue";
 import { ref, reactive, computed, onMounted } from "vue";
@@ -112,6 +112,7 @@ const openBtn = ref(false);
 const imageValue = ref("");
 const removeImg = ref();
 const dataList = ref();
+const dataRezult = ref();
 function imageValu(e) {
   const formData = new FormData();
   formData.append("file", e);
@@ -134,14 +135,12 @@ const aboutData = reactive({
   slogan: "",
   fullName: "",
   imageID: "",
-  achievements: "",
 });
 
 const rules = computed(() => {
   return {
     slogan: { required },
     imageID: { required },
-    achievements: { required },
   };
 });
 
@@ -154,7 +153,6 @@ const addWinnerBtn = async () => {
         slogan: aboutData.slogan,
         fullName: aboutData.fullName,
         imageID: aboutData.imageID,
-        achievements: [aboutData.achievements],
       };
       const postAbout = await axios.post(`about-me/post`, data);
       getData();
@@ -163,8 +161,7 @@ const addWinnerBtn = async () => {
       console.log(error);
       toast.error("Xatolik mavjud !");
     } finally {
-      (aboutData.achievements = ""),
-        (aboutData.fullName = ""),
+      (aboutData.fullName = ""),
         (aboutData.imageID = ""),
         (aboutData.slogan = "");
       $v.value.$reset();
@@ -174,13 +171,32 @@ const addWinnerBtn = async () => {
 };
 
 // get data
-
+const keyItem = ref([]);
 async function getData() {
   try {
-    const get = await axios.get(`/about-me`);
-    dataList.value = get.data;
+    const get = await axios.get(`/about-me/get`);
+    dataRezult.value = get.data;
+    dataList.value = get.data.achievements;
+    for (const [key, value] of Object.entries(get.data.achievements)) {
+      console.log(value);
+      // keyItem.push(value);
+    }
+    console.log(get);
   } catch (error) {
     console.log(error);
+  }
+}
+
+const achievement = ref("");
+async function rezults() {
+  try {
+    const rezult = await axios.post(
+      `about-me/add-achievement?achievement=${achievement.value}`
+    );
+  } catch (error) {
+    console.log(error);
+  } finally {
+    achievement.value = "";
   }
 }
 
