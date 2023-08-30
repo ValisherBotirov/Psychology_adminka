@@ -67,11 +67,12 @@
           </td>
           <th
             class="test-name px-6 py-4 font-medium text-gray-900 whitespace-nowrap max-w-[450px] break-words overflow-x-scroll"
-            v-for="item in dataList"
-            :key="item?.id"
           >
-            <!-- {{ item }} -->
-            <pre>{{ dataList }}</pre>
+          {{ 
+            function ok(){
+              
+            }
+           }}
           </th>
           <td class="flex px-6 py-4 space-x-4 justify-end">
             <div class="cursor-pointer hover:text-blue-700 font-medium"></div>
@@ -111,7 +112,6 @@ const openDeleteModal = ref(false);
 const openBtn = ref(false);
 const imageValue = ref("");
 const removeImg = ref();
-const dataList = ref();
 const dataRezult = ref();
 function imageValu(e) {
   const formData = new FormData();
@@ -170,18 +170,14 @@ const addWinnerBtn = async () => {
   }
 };
 
+const dataChild = ref();
 // get data
-const keyItem = ref([]);
 async function getData() {
   try {
     const get = await axios.get(`/about-me/get`);
     dataRezult.value = get.data;
-    dataList.value = get.data.achievements;
-    for (const [key, value] of Object.entries(get.data.achievements)) {
-      console.log(value);
-      // keyItem.push(value);
-    }
-    console.log(get);
+    const ok = get.data.achievements;
+    console.log(Object.values(ok));
   } catch (error) {
     console.log(error);
   }
