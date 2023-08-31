@@ -4,9 +4,9 @@ const $axios = axios.create({
   baseURL: import.meta.env.VITE_APP_BASE_URL,
 });
 
-const token = sessionStorage.getItem("token");
 $axios.interceptors.request.use(
   (config) => {
+    const token = sessionStorage.getItem("token");
     // if (token) {
       config.headers["Authorization"] = `Bearer ${token}`;
     // }
