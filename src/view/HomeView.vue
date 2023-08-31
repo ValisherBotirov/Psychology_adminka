@@ -15,7 +15,9 @@
             </div>
 
             <div class="mx-5">
-              <h4 class="text-2xl font-semibold text-gray-700">100</h4>
+              <h4 class="text-2xl font-semibold text-gray-700">
+                {{ dataStatus?.usersCount }}
+              </h4>
               <div class="text-gray-500">Foydalanuvchilar</div>
             </div>
           </div>
@@ -34,8 +36,10 @@
             </div>
 
             <div class="mx-5">
-              <h4 class="text-2xl font-semibold text-gray-700">200,521</h4>
-              <div class="text-gray-500">Jami buyurtmalar</div>
+              <h4 class="text-2xl font-semibold text-gray-700">
+                {{ dataStatus?.testsCount }}
+              </h4>
+              <div class="text-gray-500">Testlar soni</div>
             </div>
           </div>
         </div>
@@ -47,14 +51,14 @@
             <div
               class="p-3 w-[56px] h-[56px] flex justify-center items-center rounded-full bg-pink-600 bg-opacity-75"
             >
-              <i
-                class="fa-sharp fa-regular fa-folder-open text-2xl text-white"
-              ></i>
+              <i class="fa-solid fa-graduation-cap text-white text-2xl"></i>
             </div>
 
             <div class="mx-5">
-              <h4 class="text-2xl font-semibold text-gray-700">200</h4>
-              <div class="text-gray-500">Mavjud bo'limlar</div>
+              <h4 class="text-2xl font-semibold text-gray-700">
+                {{ dataStatus?.studentsCount }}
+              </h4>
+              <div class="text-gray-500">O'quvchilar soni</div>
             </div>
           </div>
         </div>
@@ -64,9 +68,9 @@
     <!--        active orders-->
 
     <h3 class="text-gray-700 text-2xl font-medium mt-8 mb-4">
-      So'ngi buyurtmalar
+      So'ngi xabarlar
     </h3>
-    <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+    <!-- <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
       <BlockPreloader
         v-if="false"
         width="100%"
@@ -117,13 +121,57 @@
           </tr>
         </tbody>
       </table>
+    </div> -->
+    <div class="bg-[#fff] p-8 rounded-md">
+      <table class="w-full text-sm text-left text-gray-500 mt-4">
+        <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+          <tr>
+            <th scope="col" class="p-4">#</th>
+            <th scope="col" class="px-6 py-3">F.I.Sh</th>
+            <th scope="col" class="px-6 py-3">Tel nomer</th>
+            <th scope="col" class="px-6 py-3">Tasnif</th>
+            <th scope="col" class="px-6 py-3 text-end">Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr
+            class="bg-white border-b hover:bg-gray-50"
+            v-for="(item, index) in store.newData"
+            :key="index"
+          >
+            <td class="w-4 p-4">
+              <p class="font-bold cursor-pointer">{{ index + 1 }}.</p>
+            </td>
+            <th
+              class="test-name px-6 py-4 font-medium text-gray-900 whitespace-nowrap max-w-[450px] break-words overflow-x-scroll"
+            >
+              {{ item?.fullName }}
+            </th>
+            <th
+              class="test-name px-6 py-4 font-medium text-gray-900 whitespace-nowrap max-w-[450px] break-words overflow-x-scroll"
+            >
+              {{ item?.phoneNumber }}
+            </th>
+            <th class="font-medium text-gray-900">
+              {{ item?.comment }}
+            </th>
+            <td class="flex items-center justify-end px-6 py-4 space-x-4">
+              <div>
+                <i
+                  class="fa-solid fa-circle text-xl text-[red] cursor-pointer"
+                ></i>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
 
     <!--        active persona-->
-    <h3 class="text-gray-700 text-2xl font-medium mt-8 mb-4">
+    <!-- <h3 class="text-gray-700 text-2xl font-medium mt-8 mb-4">
       Faol Foydalanuvchilar
-    </h3>
-    <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+    </h3> -->
+    <!-- <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
       <BlockPreloader
         v-if="false"
         width="100%"
@@ -174,20 +222,33 @@
           </tr>
         </tbody>
       </table>
-    </div>
+    </div> -->
   </div>
 </template>
 
 <script setup>
-import { onMounted, ref } from "@vue/runtime-core";
+import { onMounted, ref } from "vue";
 import DeleteModal from "@/components/modal/DeleteModal.vue";
 
-import axios from "axios";
+import axios from "@/plugins/axios.js";
 import { useToast } from "vue-toastification";
-import formatDate from "@/helpers/formatDate";
+// import formatDate from "@/helpers/formatDate";
 import { PhoneNumberFormatter } from "@/helpers/formatNumber.js";
 import BlockPreloader from "@/components/buttons/BlockPreloader.vue";
-import { computed } from "vue";
-import { useSellerStore } from "@/store/users.js";
+import { useMassageStore } from "@/store/massage.js";
+const store = useMassageStore();
 const toast = useToast();
+const dataStatus = ref();
+async function getStatus() {
+  try {
+    const status = await axios.get(`/statistics/get`);
+    dataStatus.value = status.data;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+onMounted(() => {
+  getStatus();
+});
 </script>
