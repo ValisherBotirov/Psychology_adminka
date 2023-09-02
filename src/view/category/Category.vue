@@ -81,18 +81,27 @@
     <!--      subcategoriya-->
     <ActionModal
       custom-class="!max-w-[750px] relative"
-      modal-title="Subcategoriyalar"
+      modal-title="Testlar"
       :is-open="openActionModal"
       @closeModal="closeActionModal"
       @saveModal="openActionModal = false"
     >
       <div class="flex gap-3 items-end">
         <FormInput
+          label="Subkategoriya nomini  kiriting"
           placeholder="Subkategoriya nomini  kiriting"
           v-model="formSubcategory.title"
           :error="$vSubcategory.title.$error"
           customClass="!p-2 bg-white"
           class="w-full"
+        />
+        <FormInput
+          placeholder="narxi"
+          label="Narxi"
+          v-model="formSubcategory.price"
+          :error="$vSubcategory.price.$error"
+          customClass="!p-2 bg-white"
+          class="w-[30%]"
         />
         <SButton variant="info" @click="addSubcategory">
           Subkategoriya qo'shish</SButton
@@ -104,6 +113,7 @@
             <tr>
               <th scope="col" class="p-4">#</th>
               <th scope="col" class="px-6 py-3">Subkategoriya</th>
+              <th scope="col" class="px-6 py-3">Narxlar</th>
               <th scope="col" class="px-6 py-3 text-end">Amallar</th>
             </tr>
           </thead>
@@ -119,6 +129,9 @@
               </td>
               <th class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
                 {{ item?.title }}
+              </th>
+              <th class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
+                {{ item?.price }} <span class="ml-3">sum</span>
               </th>
 
               <td class="flex items-center px-6 py-4 space-x-4 justify-end">
@@ -246,11 +259,13 @@ const formSubcategory = reactive({
   title: "",
   description: "",
   categoryID: 0,
+  price: null,
 });
 
 const ruleSubcategory = reactive(() => {
   return {
     title: { required },
+    price: { required },
   };
 });
 
@@ -301,7 +316,9 @@ function addSubcategory() {
           console.log(err);
         })
         .finally(() => {
-          (formSubcategory.title = ""), (editSubCategory.value = "");
+          (formSubcategory.title = ""),
+            (formSubcategory.price = ""),
+            (editSubCategory.value = "");
           $vSubcategory.value.$reset();
         });
     } else {

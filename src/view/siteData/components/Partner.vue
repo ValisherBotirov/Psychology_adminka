@@ -161,6 +161,7 @@ const addPartnerBtn = async () => {
         imageId: winnerData.imageId,
       };
       const partner = await axios.post("/partners", data);
+      console.log(partner);
       getPartner();
       toast.success("Hamkor qo'shildi !");
     } catch (error) {
