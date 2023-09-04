@@ -1,7 +1,7 @@
 <template>
   <div>
     <News />
-    <Winnered class="my-20" />
+    <!-- <Winnered class="my-20" /> -->
     <Partner class="my-20" />
     <About class="my-20" />
     <WhatPsixology class="my-20" />
