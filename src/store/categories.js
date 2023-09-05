@@ -1,6 +1,8 @@
 import { defineStore } from "pinia";
 import axios from "@/plugins/axios.js";
+import {useAuthStore} from "@/store/auth.js";
 
+const authStore =  useAuthStore()
 export const useCategoryStore = defineStore("categoryStore", {
   state: () => ({
     categories: [],
@@ -18,6 +20,9 @@ export const useCategoryStore = defineStore("categoryStore", {
             resolve(res);
           })
           .catch((error) => {
+            if(error.response.status === 401){
+              authStore.logOut()
+            }
             reject(error);
           })
           .finally(() => {
@@ -35,6 +40,9 @@ export const useCategoryStore = defineStore("categoryStore", {
             resolve(res);
           })
           .catch((err) => {
+            if(err.response.status === 401){
+              authStore.logOut()
+            }
             reject(err);
           })
           .finally(() => {

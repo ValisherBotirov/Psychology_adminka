@@ -28,10 +28,6 @@ export const useAuthStore = defineStore("auth", {
       } catch (err) {
         toast.error("Telefon raqam yoki parol xato!");
       }
-      // sessionStorage.setItem('userRole','ADMIN')
-      // sessionStorage.setItem('isRegister',1)
-      // toast.success("Tizimga muvaffaqiyatli kirdingiz!")
-      // await router.push("/")
     },
 
     async logOut() {

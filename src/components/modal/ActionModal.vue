@@ -9,12 +9,15 @@
       :class="customClass"
     >
       <div class="relative bg-white rounded-lg shadow">
+          <div class="flex justify-between">
         <p class="py-2 px-3 font-medium">{{ modalTitle }}:</p>
+              <div class="py-2 px-3 cursor-pointer" @click="cancelModal"><i class="fa-solid fa-xmark text-lg"></i></div>
+          </div>
         <div class="px-4 py-2 text-center w-full">
           <form class="mb-4">
             <slot></slot>
           </form>
-          <div class="flex justify-end">
+          <div class="flex justify-end" v-if="notBtn">
             <SButton variant="danger" class="mr-2" @click="cancelModal"
               >Bekor qilish</SButton
             >
@@ -41,6 +44,10 @@ const props = defineProps({
     type: String,
     default: "Ko'rsatgich qo`shish",
   },
+    notBtn:{
+      type:Boolean,
+        default:true
+    }
 });
 
 const emit = defineEmits(["closeModal", "saveModal"]);
