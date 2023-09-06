@@ -10,6 +10,9 @@ export default defineConfig({
       "@": fileURLToPath(new URL("./src", import.meta.url)),
     },
   },
+  // server: {
+  //   host: "176.96.243.168", // Add your host IP address here
+  // },
   // build: {
   //   rollupOptions: {
   //     external: [
