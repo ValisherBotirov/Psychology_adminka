@@ -70,58 +70,6 @@
     <h3 class="text-gray-700 text-2xl font-medium mt-8 mb-4">
       So'ngi xabarlar
     </h3>
-    <!-- <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
-      <BlockPreloader
-        v-if="false"
-        width="100%"
-        margin="10px 0"
-        height="40px"
-        :loading="false"
-        v-for="i in 10"
-        :key="i"
-      ></BlockPreloader>
-
-      <table class="w-full text-sm text-left text-gray-500" v-else>
-        <thead class="text-xs text-gray-700 uppercase bg-gray-50">
-          <tr>
-            <th scope="col" class="p-4">#</th>
-            <th scope="col" class="px-6 py-3">F.I.SH</th>
-            <th scope="col" class="px-6 py-3">Buyurtma vaqti</th>
-            <th scope="col" class="px-6 py-3">Buyurtma nomi</th>
-            <th scope="col" class="px-6 py-3">Buyurtma narxi</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr
-            class="bg-white border-b hover:bg-gray-50"
-            v-for="(item, index) in 5"
-            :key="index"
-          >
-            <td class="w-4 p-4">
-              <router-link
-                :to="`users/${index}`"
-                class="font-bold cursor-pointer hover:text-[blue]"
-                >{{ index + 1 }}.</router-link
-              >
-            </td>
-            <th
-              class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap cursor-pointer hover:text-[blue]"
-            >
-              <router-link :to="`users/${index}`"> Valisher </router-link>
-            </th>
-            <th class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
-              order
-            </th>
-            <th class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
-              order
-            </th>
-            <th class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
-              narxi
-            </th>
-          </tr>
-        </tbody>
-      </table>
-    </div> -->
     <div class="bg-[#fff] p-8 rounded-md">
       <table class="w-full text-sm text-left text-gray-500 mt-4">
         <thead class="text-xs text-gray-700 uppercase bg-gray-50">
@@ -167,76 +115,18 @@
       </table>
     </div>
 
-    <!--        active persona-->
-    <!-- <h3 class="text-gray-700 text-2xl font-medium mt-8 mb-4">
-      Faol Foydalanuvchilar
-    </h3> -->
-    <!-- <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
-      <BlockPreloader
-        v-if="false"
-        width="100%"
-        margin="10px 0"
-        height="40px"
-        :loading="false"
-        v-for="i in 10"
-        :key="i"
-      ></BlockPreloader>
-
-      <table class="w-full text-sm text-left text-gray-500" v-else>
-        <thead class="text-xs text-gray-700 uppercase bg-gray-50">
-          <tr>
-            <th scope="col" class="p-4">#</th>
-            <th scope="col" class="px-6 py-3">F.I.SH</th>
-            <th scope="col" class="px-6 py-3">Telefon raqami</th>
-            <th scope="col" class="px-6 py-3">Tug'ilgan kuni</th>
-            <th scope="col" class="px-6 py-3">Yashash manzili</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr
-            class="bg-white border-b hover:bg-gray-50"
-            v-for="(item, index) in 5"
-            :key="index"
-          >
-            <td class="w-4 p-4">
-              <router-link
-                :to="`users/${index}`"
-                class="font-bold cursor-pointer hover:text-[blue]"
-                >{{ index + 1 }}.</router-link
-              >
-            </td>
-            <th
-              class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap cursor-pointer hover:text-[blue]"
-            >
-              <router-link :to="`users/${index}`"> valisher </router-link>
-            </th>
-            <th class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
-              {{ PhoneNumberFormatter("998945369887") }}
-            </th>
-            <th class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
-              nimadir
-            </th>
-            <th class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
-              nimadir2
-            </th>
-          </tr>
-        </tbody>
-      </table>
-    </div> -->
   </div>
 </template>
 
 <script setup>
 import { onMounted, ref } from "vue";
-import DeleteModal from "@/components/modal/DeleteModal.vue";
-
 import axios from "@/plugins/axios.js";
 import { useToast } from "vue-toastification";
-// import formatDate from "@/helpers/formatDate";
-import { PhoneNumberFormatter } from "@/helpers/formatNumber.js";
 import BlockPreloader from "@/components/buttons/BlockPreloader.vue";
 import { useMassageStore } from "@/store/massage.js";
+import {useAuthStore} from "@/store/auth.js";
 const store = useMassageStore();
+const authStore =  useAuthStore()
 const toast = useToast();
 const dataStatus = ref();
 async function getStatus() {
@@ -244,7 +134,10 @@ async function getStatus() {
     const status = await axios.get(`/statistics/get`);
     dataStatus.value = status.data;
   } catch (error) {
-    console.log(error);
+    console.log(error.response.status,'app err');
+    if(error.response.status === 401){
+       authStore.logOut()
+    }
   }
 }
 
