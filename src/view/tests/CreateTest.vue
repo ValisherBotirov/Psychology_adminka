@@ -9,7 +9,7 @@
       </router-link>
     </div>
     <div
-      class="mt-5 flex gap-4 text-white max-w-[900px] py-3 mx-auto justify-around"
+      class="mt-5 flex gap-4 text-white  py-3 mx-auto justify-between"
     >
       <router-link
         to="/test/one"
@@ -29,6 +29,12 @@
         :active-class="'bg-red-800'"
         >Yopiq variantlik test qo'shish</router-link
       >
+        <router-link
+                to="/test/category"
+                class="bg-blue-500 py-3 px-4 transition duration-500 rounded-md"
+                :active-class="'bg-red-800'"
+        >Kategoriyali test qo'shish</router-link
+        >
     </div>
 
     <div class="mt-4">
@@ -40,10 +46,8 @@
 </template>
 
 <script setup lang="ts">
-import { useRoute } from "vue-router";
 import SButton from "@/components/buttons/SButton.vue";
-import SingleSelect from "@/components/select/SingleSelect.vue";
-import { ref } from "vue";
+
 </script>
 
 <style>

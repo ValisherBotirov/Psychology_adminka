@@ -57,6 +57,10 @@ const routes = [
         path: "close",
         component: () => import("@/view/tests/ClosedTest.vue"),
       },
+      {
+        path:"category",
+        component:()=> import("@/view/tests/CategoryTest.vue")
+      }
     ],
   },
   // profile vue
