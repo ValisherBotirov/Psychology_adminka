@@ -30,6 +30,21 @@ export const useAuthStore = defineStore("auth", {
       }
     },
 
+    async refreshToken() {
+      try {
+        const newToken = await axios.post("auth/refresh/token", {
+          refreshToken: sessionStorage.getItem("refreshToken"),
+        });
+        sessionStorage.setItem("token", newToken.data.accessToken);
+      } catch (err) {
+        console.log(err.response.status, "err");
+        if (err.response.status === 401 || err.response.status === 500) {
+          this.logOut();
+          window.location.reload();
+        }
+      }
+    },
+
     async logOut() {
       this.user.userRole = "";
       this.user.isRegiter = 0;
