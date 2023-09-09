@@ -69,7 +69,8 @@
                                 :img="item.image"
                         />
                         <div class="grid grid-cols-2 gap-2">
-                            <div class="" v-for="el in form.categoryTestOption" :key="el">
+                            <div class="" v-for="el in item.categoryTestOption" :key="el">
+                                <pre>{{el.score}}</pre>
                                 <FormInput :label="`${el.name}`" placeholder="0" customClass="p-2" type="number" v-model="el.score"/>
                             </div>
                         </div>
@@ -132,31 +133,49 @@ const form = reactive({
             text: "",
             imageID: null,
             image: "",
+            categoryTestOption : [
+                {
+                    name:"Shifokor",
+                    score:null
+                },
+                {
+                    name:"Dasturchi",
+                    score:null
+                },{
+                    name:"Muhandis",
+                    score:null
+                },
+                {
+                    name:"O'qituvchi",
+                    score:null
+                }
+            ]
         },
         {
             id: 2,
             text: "",
             imageID: null,
             image: "",
+            categoryTestOption : [
+                {
+                    name:"Shifokor",
+                    score:null
+                },
+                {
+                    name:"Dasturchi",
+                    score:null
+                },{
+                    name:"Muhandis",
+                    score:null
+                },
+                {
+                    name:"O'qituvchi",
+                    score:null
+                }
+            ]
         },
     ],
-    categoryTestOption : [
-        {
-            name:"Shifokor",
-            score:null
-        },
-        {
-            name:"Dasturchi",
-            score:null
-        },{
-            name:"Muhandis",
-            score:null
-        },
-        {
-            name:"O'qituvchi",
-            score:null
-        }
-    ]
+
 });
 
 const rule = computed(() => {
@@ -173,6 +192,23 @@ function addNewOption() {
         text: "",
         imageID: null,
         image: "",
+        categoryTestOption : [
+            {
+                name:"Shifokor",
+                score:null
+            },
+            {
+                name:"Dasturchi",
+                score:null
+            },{
+                name:"Muhandis",
+                score:null
+            },
+            {
+                name:"O'qituvchi",
+                score:null
+            }
+        ]
     };
     form.answerCreateDTOList.push(option);
 }
