@@ -34,6 +34,7 @@
           v-model="form.correctCloseAnswer"
           :error="$v.correctCloseAnswer.$error"
         />
+        <pre>{{ form.score }}</pre>
         <FormInput
           placeholder="0"
           custom-class="py-[10px]"
@@ -63,7 +64,7 @@ import { computed, reactive } from "vue";
 import { required } from "@vuelidate/validators";
 import { useVuelidate } from "@vuelidate/core";
 import SingleSelect from "@/components/select/SingleSelect.vue";
-import {useRoute, useRouter} from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import { useCategoryStore } from "@/store/categories.js";
 import axios from "../../plugins/axios.js";
 
@@ -71,7 +72,7 @@ const categoryStore = useCategoryStore();
 
 const toast = useToast();
 const route = useRoute();
-const router = useRouter()
+const router = useRouter();
 
 const subcategoryData = computed(() =>
   categoryStore.subCategories.map((el) => {
@@ -84,15 +85,26 @@ const subcategoryData = computed(() =>
 
 const routeId = route.query.id;
 
-
 const form = reactive({
-  testType: "CLOSE_QUESTIONS",
+  questionType: "CLOSE_QUESTIONS",
   title: "",
   imageID: "",
   testID: "",
-    image:"",
+  image: "",
   correctCloseAnswer: "",
   score: null,
+  answerCreateDTOList: [
+    {
+      text: null,
+      imageID: null,
+      points: [
+        {
+          feedbackId: null,
+          point: "",
+        },
+      ],
+    },
+  ],
 });
 
 const rule = computed(() => {
@@ -118,73 +130,84 @@ function onSubmit() {
   if (!routeId) {
     $v.value.$validate();
     if (!$v.value.$error) {
-    console.log(form, "opt");
-    axios
-      .post("/question", form)
-      .then((res) => {
-        console.log(res);
-        toast.success("Test muvaffaqiyatli qo'shildi");
-      })
-      .catch((err) => {
-        toast.error("Qo'shishda xatolik yuz berdi!");
-      })
-      .finally(() => {
-        setTimeout(() => {
-          // window.location.reload();
-        }, 1000);
-      });
-  }
-  }
-  else if(routeId){
-      $v.value.$validate();
-      if (typeof routeId === "string") {
-          form.testID = routeId
-      }
-      console.log("edit")
-      if (!$v.value.$error) {
-          const editObj = {
-              id:+routeId,
-              title:form.title,
-              imageID:form.imageID,
-              correctCloseAnswer:form.correctCloseAnswer,
-              score:form.score,
-              answerUpdateDTOList:null,
-              correctAnswers:null,
-          }
-          console.log(editObj, "opt");
-          axios
-              .patch("/question", editObj)
-              .then((res) => {
-                  console.log(res);
-                  toast.success("Test muvaffaqiyatli tahrirlandi");
-                  setTimeout(()=>{
-                      router.push("/list")
-                  },1000)
-              })
-              .catch((err) => {
-                  toast.error("Tahrirlashda xatolik yuz berdi!");
-              })
-
-      }
+      console.log(form, "opt");
+      form.answerCreateDTOList[0].points[0].point = form.score;
+      axios
+        .post("/question", form)
+        .then((res) => {
+          console.log(res);
+          toast.success("Test muvaffaqiyatli qo'shildi");
+        })
+        .catch((err) => {
+          toast.error("Qo'shishda xatolik yuz berdi!");
+        })
+        .finally(() => {
+          // setTimeout(() => {
+          //   window.location.reload();
+          // }, 2000);
+        });
+    }
+  } else if (routeId) {
+    $v.value.$validate();
+    if (typeof routeId === "string") {
+      form.testID = routeId;
+    }
+    console.log("edit");
+    if (!$v.value.$error) {
+      const editObj = {
+        id: +routeId,
+        title: form.title,
+        imageID: form.imageID,
+        correctCloseAnswer: form.correctCloseAnswer,
+        answerCreateDTOList: [
+          {
+            text: null,
+            imageID: null,
+            points: [
+              {
+                feedbackId: null,
+                point: form.score,
+              },
+            ],
+          },
+        ],
+      };
+      console.log(editObj, "opt");
+      axios
+        .patch("/question", editObj)
+        .then((res) => {
+          console.log(res);
+          toast.success("Test muvaffaqiyatli tahrirlandi");
+          setTimeout(() => {
+            // router.push("/list");
+          }, 1000);
+        })
+        .catch((err) => {
+          toast.error("Tahrirlashda xatolik yuz berdi!");
+        });
+    }
   }
 }
 
-function editTest(){
-    axios.get(`/question/get/${route.query.id}`).then((res)=>{
-        form.title = res.data.questionDTO.title
-        form.correctCloseAnswer = res.data.closeAnswer
-        form.score = res.data.questionDTO.score
-        form.image = res.data.questionDTO.image?.url
-        form.imageID  = res.data.questionDTO.image?.id
-    }).catch((err)=>{
-        console.log(err)
+function editTest() {
+  axios
+    .get(`/question/get/${route.query.id}`)
+    .then((res) => {
+      form.title = res.data.title;
+      form.correctCloseAnswer = res.data.correctCloseAnswer;
+      form.score = res.data.answerDTOList[0]?.points[0]?.point;
+      form.image = res.data.image?.url;
+      form.imageID = res.data.image?.id;
     })
+    .catch((err) => {
+      console.log(err);
+    });
 }
 
 onMounted(() => {
   categoryStore.fetchSubCategoryAll();
-  if(routeId){
-      editTest()
+  if (routeId) {
+    editTest();
   }
 });
 </script>
