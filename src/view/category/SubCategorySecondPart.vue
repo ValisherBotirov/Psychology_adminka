@@ -1,8 +1,8 @@
 <template>
-  <div>
+  <div class="mt-20">
     <div class="flex justify-between items-center mb-4">
       <h3 class="text-gray-700 text-3xl font-medium">
-        Izohli testli test qo'shish
+        Category testli test qo'shish
       </h3>
     </div>
     <div class="bg-white p-3 rounded-lg">
@@ -22,14 +22,20 @@
           custom-class="!p-2"
         />
         <Textarea
+          v-model="item.key"
+          custom-class="!h-[40px] py-1"
+          class="w-[20%]"
+          placeholder="Test category"
+        />
+        <Textarea
           v-model="item.description"
           custom-class="!h-[40px] py-1"
           class="w-full"
           placeholder="Sharhni yozing"
         />
         <!-- <div class="font-medium text-blue-600 hover:underline cursor-pointer">
-          <i class="fa-solid fa-pen-to-square text-[blue] text-[20px]"></i>
-        </div> -->
+            <i class="fa-solid fa-pen-to-square text-[blue] text-[20px]"></i>
+          </div> -->
         <div
           @click="deleteOption(item?.id)"
           class="font-medium text-red-600 hover:underline cursor-pointer"
@@ -112,7 +118,6 @@
         @closeModal="openDeleteModal = $event"
       />
     </div>
-    <SubCategorySecondPart />
   </div>
 </template>
 
@@ -120,7 +125,6 @@
 import { onMounted, ref } from "@vue/runtime-core";
 import DeleteModal from "@/components/modal/DeleteModal.vue";
 import BlockPreloader from "@/components/buttons/BlockPreloader.vue";
-import SubCategorySecondPart from "./SubCategorySecondPart.vue";
 import SButton from "@/components/buttons/SButton.vue";
 import { computed, reactive } from "vue";
 import axios from "@/plugins/axios.js";
@@ -144,12 +148,12 @@ const openActionModal = ref(false);
 const formSubcategory = reactive({
   title: "",
   price: null,
-  testType: "OLD",
+  testType: "NEW",
   categoryID: route.params.id,
   feedbacks: [
     {
       id: 1,
-      key: null,
+      key: "",
       percent: "" ? "" : "100",
       description: "",
     },
@@ -219,7 +223,7 @@ function addSubcategory() {
 function addFeedbacks() {
   const data = {
     id: formSubcategory.feedbacks.length + 1,
-    key: null,
+    key: "",
     percent: "" ? "" : "100",
     description: "",
   };
