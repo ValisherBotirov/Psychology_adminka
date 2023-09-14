@@ -1,6 +1,7 @@
 <template>
   <div class="transition duration-500">
     <div class="border border-gray-600 py-4 px-5 bg-white">
+      <!-- <pre>{{ form.answerCreateDTOList }}</pre> -->
       <div class="flex items-center gap-4 mt-1 mb-4" v-if="!routeId">
         <SingleSelect
           v-model="form.testID"
@@ -8,6 +9,7 @@
           :data="subcategoryData"
           :error="$v.testID.$error"
           class="w-full"
+          @changeSelect="fetchTestCategory(form.testID)"
         />
       </div>
       <div class="flex gap-6">
@@ -69,14 +71,14 @@
               :img="item.image"
             />
             <div class="grid grid-cols-2 gap-2">
-              <div class="" v-for="el in item.categoryTestOption" :key="el">
-                <!--                                <pre>{{el.score}}</pre>-->
+              <div class="" v-for="el in item.points" :key="el">
+                <!-- <pre>{{ el.point }}</pre> -->
                 <FormInput
-                  :label="`${el.name}`"
+                  :label="`${el.key}`"
                   placeholder="0"
                   customClass="p-2"
                   type="number"
-                  v-model="el.score"
+                  v-model="el.point"
                 />
               </div>
             </div>
@@ -126,12 +128,11 @@ const subcategoryData = computed(() =>
 const routeId = route.query.id;
 
 const form = reactive({
-  testType: "Category",
+  questionType: "Category",
   title: "",
   imageID: null,
   testID: "",
   image: "",
-  correctAnswers: [],
   correctCloseAnswer: "",
   answerCreateDTOList: [
     {
@@ -139,22 +140,16 @@ const form = reactive({
       text: "",
       imageID: null,
       image: "",
-      categoryTestOption: [
+      points: [
         {
-          name: "Shifokor",
-          score: null,
+          key: "Shifokor",
+          point: null,
+          feedbackId: null,
         },
         {
-          name: "Dasturchi",
-          score: null,
-        },
-        {
-          name: "Muhandis",
-          score: null,
-        },
-        {
-          name: "O'qituvchi",
-          score: null,
+          key: "Dasturchi",
+          point: null,
+          feedbackId: null,
         },
       ],
     },
@@ -163,22 +158,16 @@ const form = reactive({
       text: "",
       imageID: null,
       image: "",
-      categoryTestOption: [
+      points: [
         {
-          name: "Shifokor",
-          score: null,
+          key: "Shifokor",
+          point: null,
+          feedbackId: null,
         },
         {
-          name: "Dasturchi",
-          score: null,
-        },
-        {
-          name: "Muhandis",
-          score: null,
-        },
-        {
-          name: "O'qituvchi",
-          score: null,
+          key: "Dasturchi",
+          point: null,
+          feedbackId: null,
         },
       ],
     },
@@ -193,30 +182,14 @@ const rule = computed(() => {
 
 const $v = useVuelidate(rule, form);
 
+const test = ref([]);
 function addNewOption() {
   const option = {
     id: form.answerCreateDTOList.length + 1,
     text: "",
     imageID: null,
     image: "",
-    categoryTestOption: [
-      {
-        name: "Shifokor",
-        score: null,
-      },
-      {
-        name: "Dasturchi",
-        score: null,
-      },
-      {
-        name: "Muhandis",
-        score: null,
-      },
-      {
-        name: "O'qituvchi",
-        score: null,
-      },
-    ],
+    points: test.value,
   };
   form.answerCreateDTOList.push(option);
 }
@@ -267,9 +240,9 @@ function onSubmit() {
           toast.error("Qo'shishda xatolik yuz berdi!");
         })
         .finally(() => {
-          setTimeout(() => {
-            window.location.reload();
-          }, 2000);
+          // setTimeout(() => {
+          //   window.location.reload();
+          // }, 2000);
         });
     }
   } else if (routeId) {
@@ -330,10 +303,38 @@ function editTest() {
     });
 }
 
+function fetchTestCategory(id) {
+  console.log("run is code", id);
+  axios
+    .get(`test/get-feedback-key-by-testId/${id}`)
+    .then((res) => {
+      test.value = res.data.map((el) => {
+        return {
+          key: el.key,
+          point: null,
+          feedbackId: el.id,
+        };
+      });
+      form.answerCreateDTOList.forEach((item) => {
+        item.points = res.data.map((el) => {
+          return {
+            key: el.key,
+            point: null,
+            feedbackId: el.id,
+          };
+        });
+      });
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+}
+
 onMounted(() => {
   categoryStore.fetchSubCategoryAll();
   if (routeId) {
     editTest();
   }
+  toast.info("Birinchi navbatda test nomini tanlang!");
 });
 </script>

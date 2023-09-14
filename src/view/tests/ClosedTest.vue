@@ -34,7 +34,6 @@
           v-model="form.correctCloseAnswer"
           :error="$v.correctCloseAnswer.$error"
         />
-        <pre>{{ form.score }}</pre>
         <FormInput
           placeholder="0"
           custom-class="py-[10px]"
@@ -99,7 +98,7 @@ const form = reactive({
       imageID: null,
       points: [
         {
-          feedbackId: null,
+          feedbackId: 0,
           point: "",
         },
       ],
@@ -165,7 +164,7 @@ function onSubmit() {
             imageID: null,
             points: [
               {
-                feedbackId: null,
+                feedbackId: 0,
                 point: form.score,
               },
             ],
