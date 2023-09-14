@@ -1,7 +1,7 @@
 <template>
   <div class="transition duration-500">
+    <!-- <pre>{{ arr }}</pre> -->
     <div class="border border-gray-600 py-4 px-5 bg-white">
-      <!--            <pre>{{ form }}</pre>-->
       <div class="flex items-center gap-4 mt-1 mb-4" v-if="!routeId">
         <SingleSelect
           v-model="form.testID"
@@ -29,7 +29,7 @@
       <div class="flex items-end gap-10 my-4">
         <div
           v-if="!routeId"
-          class="flex gap-2 cursor-pointer group mb-2 w-full"
+          class="flex gap-2 cursor-pointer group mb-1 mt-2 w-full"
           @click="addNewOption"
         >
           <div
@@ -43,30 +43,14 @@
             Yangi test varianti qo'shish
           </p>
         </div>
-        <FormInput
-          placeholder="0"
-          custom-class="py-2"
-          label="Savol uchun ball belgilang"
-          class="w-full"
-          v-model="form.score"
-          :error="$v.score.$error"
-        />
       </div>
       <div class="grid grid-cols-2 gap-x-6 gap-y-3">
         <div
-          class="flex gap-4 items-center"
+          class="flex gap-4"
           v-for="(item, index) in form.answerCreateDTOList"
           :key="index"
         >
-          <div class="flex flex-col gap-2 items-center">
-            <input
-              id="teal-checkbox"
-              type="checkbox"
-              :value="item.id"
-              v-model="item.correct"
-              name="colored-radio"
-              class="w-5 h-5 cursor-pointer"
-            />
+          <div class="flex flex-col mt-1">
             <i
               class="fa-solid fa-trash text-lg text-red-600 cursor-pointer"
               @click="deleteOption(item.id)"
@@ -83,6 +67,13 @@
               @getBase64="(e) => fetchUploadImagesId(item, e)"
               :inputId="`file${item.id}`"
               :img="item.image"
+            />
+            <FormInput
+              placeholder="0"
+              type="number"
+              custom-class="py-2"
+              class="w-full"
+              v-model="item.points[0].point"
             />
           </div>
         </div>
@@ -129,27 +120,35 @@ const subcategoryData = computed(() =>
 const routeId = route.query.id;
 
 const form = reactive({
-  testType: "MULTIPLE_CHOICE",
+  questionType: "MULTIPLE_CHOICE",
   title: "",
   imageID: null,
   image: "",
   testID: "",
-  score: "",
-  correctAnswers: [],
   answerCreateDTOList: [
     {
       id: 1,
       text: "",
-      correct: false,
       imageID: "",
       image: "",
+      points: [
+        {
+          feedbackId: null,
+          point: "",
+        },
+      ],
     },
     {
       id: 2,
       text: "",
-      correct: false,
       imageID: "",
       image: "",
+      points: [
+        {
+          feedbackId: null,
+          point: "",
+        },
+      ],
     },
   ],
 });
@@ -157,7 +156,6 @@ const form = reactive({
 const rule = computed(() => {
   return {
     testID: { required },
-    score: { required },
   };
 });
 
@@ -168,8 +166,13 @@ function addNewOption() {
     id: form.answerCreateDTOList.length + 1,
     text: "",
     imageID: "",
-    correct: false,
     image: "",
+    points: [
+      {
+        feedbackId: null,
+        point: "",
+      },
+    ],
   };
   form.answerCreateDTOList.push(option);
 }
@@ -206,34 +209,20 @@ function onSubmit() {
   if (!routeId) {
     $v.value.$validate();
     if (!$v.value.$error) {
-      const correctArr = [];
-      form.answerCreateDTOList.forEach((el) => {
-        if (el.correct) {
-          correctArr.push(el.id);
-        }
-      });
-
-      form.correctAnswers = correctArr;
-
-      const check = form.answerCreateDTOList.some((el) => el.correct !== false);
-      if (!check) {
-        toast.error("Iltimos bitta to'g'ri javobni belgilang");
-      } else {
-        axios
-          .post("/question", form)
-          .then((res) => {
-            console.log(res);
-            toast.success("Test muvaffaqiyatli qo'shildi");
-          })
-          .catch((err) => {
-            toast.error("Qo'shishda xatolik yuz berdi!");
-          })
-          .finally(() => {
-            setTimeout(() => {
-              window.location.reload()
-            }, 2000);
-          });
-      }
+      axios
+        .post("/question", form)
+        .then((res) => {
+          console.log(res);
+          toast.success("Test muvaffaqiyatli qo'shildi");
+        })
+        .catch((err) => {
+          toast.error("Qo'shishda xatolik yuz berdi!");
+        })
+        .finally(() => {
+          // setTimeout(() => {
+          //   window.location.reload();
+          // }, 2000);
+        });
 
       console.log(form, "opt");
     }
@@ -243,20 +232,10 @@ function onSubmit() {
       form.testID = routeId;
     }
     if (!$v.value.$error) {
-      const correctArr = [];
-      form.answerCreateDTOList.forEach((el) => {
-        if (el.correct) {
-          correctArr.push(el.id);
-        }
-      });
-
-      form.correctAnswers = correctArr;
       const editObj = {
         id: +routeId,
         title: form.title,
         imageID: form.imageID,
-        score: form.score,
-        correctAnswers: form.correctAnswers,
         answerUpdateDTOList: form.answerCreateDTOList,
         correctCloseAnswer: null,
       };
@@ -270,7 +249,7 @@ function onSubmit() {
           toast.success("Test muvaffaqiyatli tahrirlandi");
           setTimeout(() => {
             router.push("/list");
-          }, 1000);
+          }, 2000);
         })
         .catch((err) => {
           toast.error("Tahrirlashda xatolik yuz berdi!");
@@ -287,22 +266,24 @@ function editTest() {
     .then((res) => {
       console.log(res);
       arr.value = res.data;
-      form.title = res.data.questionDTO.title;
-      form.testType = res.data.questionDTO.testType;
-      form.image = res.data.questionDTO.image?.url;
-      form.imageID = res.data.questionDTO.image?.id;
-      form.score = res.data.questionDTO.score;
-      form.answerCreateDTOList = res.data.questionDTO.answerDTOList.map(
-        (el) => {
-          return {
-            id: el.id,
-            text: el.text,
-            imageID: el.image?.id || null,
-            image: el.image?.url || null,
-            correct: el.correct,
-          };
-        }
-      );
+      form.title = res.data.title;
+      form.questionType = res.data.questionType;
+      form.image = res.data.image?.url;
+      form.imageID = res.data.image?.id;
+      form.answerCreateDTOList = res.data.answerDTOList.map((el) => {
+        return {
+          id: el.id,
+          text: el.text,
+          imageID: el.image?.id || null,
+          image: el.image?.url || null,
+          points: [
+            {
+              feedbackId: el.points[0].feedbackId,
+              point: el.points[0].point,
+            },
+          ],
+        };
+      });
     })
     .catch((err) => {
       console.log(err);
@@ -310,11 +291,6 @@ function editTest() {
 }
 
 onMounted(() => {
-  // form.correctAnswers.forEach((id) => {
-  //     console.log(id)
-  //   form.answerCreateDTOList.find((el) => el.id === id).correct = true;
-  // });
-
   categoryStore.fetchSubCategoryAll();
   if (routeId) {
     editTest();

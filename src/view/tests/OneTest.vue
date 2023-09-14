@@ -227,9 +227,9 @@ function onSubmit() {
           toast.error("Qo'shishda xatolik yuz berdi!");
         })
         .finally(() => {
-          //   setTimeout(() => {
-          //     window.location.reload();
-          //   }, 2000);
+          setTimeout(() => {
+            window.location.reload();
+          }, 2000);
         });
     }
   } else if (routeId) {
