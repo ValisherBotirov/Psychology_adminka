@@ -28,6 +28,12 @@ const routes = [
     meta: { roles: ["ADMIN"] },
   },
   {
+    path: "/category/:id",
+    name: "SubCategory",
+    component: () => import("@/view/category/SubCategory.vue"),
+    meta: { roles: ["ADMIN"] },
+  },
+  {
     path: "/site-data",
     name: "site-data",
     component: () => import("@/view/siteData/SiteData.vue"),
@@ -58,9 +64,9 @@ const routes = [
         component: () => import("@/view/tests/ClosedTest.vue"),
       },
       {
-        path:"category",
-        component:()=> import("@/view/tests/CategoryTest.vue")
-      }
+        path: "category",
+        component: () => import("@/view/tests/CategoryTest.vue"),
+      },
     ],
   },
   // profile vue

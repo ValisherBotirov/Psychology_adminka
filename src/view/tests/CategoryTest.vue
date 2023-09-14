@@ -70,7 +70,7 @@
                         />
                         <div class="grid grid-cols-2 gap-2">
                             <div class="" v-for="el in item.categoryTestOption" :key="el">
-                                <pre>{{el.score}}</pre>
+<!--                                <pre>{{el.score}}</pre>-->
                                 <FormInput :label="`${el.name}`" placeholder="0" customClass="p-2" type="number" v-model="el.score"/>
                             </div>
                         </div>
