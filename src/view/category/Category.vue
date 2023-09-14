@@ -52,7 +52,7 @@
             <td class="flex items-center px-6 py-4 space-x-4 justify-end">
               <SButton variant="secondary">
                 <router-link :to="`/category/${item.id}`"
-                  >Tets bo'limini qo'shish</router-link
+                  >Test qo'shish bo'limi</router-link
                 >
               </SButton>
               <div
