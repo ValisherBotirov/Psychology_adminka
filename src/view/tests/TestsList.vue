@@ -111,7 +111,7 @@ async function getList() {
 
 function editTest(item) {
   console.log(item);
-  switch (item.testType) {
+  switch (item.questionType) {
     case "CHECKBOX":
       navigateRouter("one", item.id);
       break;
@@ -125,11 +125,11 @@ function editTest(item) {
 }
 function navigateRouter(url, id) {
   // router.push(`/test/${url}`)
+  console.log("run navigator");
   router.replace({
     path: `/test/${url}`,
     query: { id },
   });
-    console.log("run")
 }
 
 const itemId = ref("");
@@ -150,7 +150,7 @@ async function deleteTest() {
 
 onMounted(() => {
   categoryStore.fetchSubCategoryAll();
-  toast.info("Tets kategoriyalaridan birini tanlang!")
+  toast.info("Tets kategoriyalaridan birini tanlang!");
 });
 </script>
 
