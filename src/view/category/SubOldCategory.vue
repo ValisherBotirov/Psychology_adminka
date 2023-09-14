@@ -1,8 +1,8 @@
 <template>
-  <div class="mt-20">
+  <div>
     <div class="flex justify-between items-center mb-4">
       <h3 class="text-gray-700 text-3xl font-medium">
-        Category testli test qo'shish
+        Izohli testli test qo'shish
       </h3>
     </div>
     <div class="bg-white p-3 rounded-lg">
@@ -22,20 +22,12 @@
           custom-class="!p-2"
         />
         <Textarea
-          v-model="item.key"
-          custom-class="!h-[40px] py-1"
-          class="w-[20%]"
-          placeholder="Test category"
-        />
-        <Textarea
           v-model="item.description"
           custom-class="!h-[40px] py-1"
           class="w-full"
           placeholder="Sharhni yozing"
         />
-        <!-- <div class="font-medium text-blue-600 hover:underline cursor-pointer">
-            <i class="fa-solid fa-pen-to-square text-[blue] text-[20px]"></i>
-          </div> -->
+
         <div
           @click="deleteOption(item?.id)"
           class="font-medium text-red-600 hover:underline cursor-pointer"
@@ -48,15 +40,16 @@
           label="Test nomini  kiriting"
           placeholder="Test nomini  kiriting"
           v-model="formSubcategory.title"
-          :error="$vSubcategory.title.$error"
+          :error="$v.title.$error"
           customClass="!p-2 bg-white"
           class="w-full"
         />
         <FormInput
           placeholder="0"
           label="Narxi"
+          type="number"
           v-model="formSubcategory.price"
-          :error="$vSubcategory.price.$error"
+          :error="$v.price.$error"
           customClass="!p-2 bg-white"
           class="w-[30%]"
         />
@@ -69,30 +62,34 @@
       >
         <thead class="text-xs text-gray-700 uppercase bg-gray-50">
           <tr>
-            <th scope="col" class="p-4">#</th>
             <th scope="col" class="px-6 py-3">Test</th>
             <th scope="col" class="px-6 py-3">Narxlar</th>
             <th scope="col" class="px-6 py-3 text-end">Amallar</th>
           </tr>
         </thead>
-        <tbody class="">
+        <tbody>
           <tr
-            v-if="subCategoryList.length"
             class="bg-white border-b hover:bg-gray-50"
             v-for="(item, index) in subCategoryList"
             :key="index"
+            v-if="subCategoryList.length"
           >
-            <td class="w-4 p-4">
-              <p class="font-bold cursor-pointer">{{ index + 1 }}.</p>
-            </td>
-            <th class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
+            <th
+              v-if="item?.testType === 'OLD'"
+              class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap"
+            >
               {{ item?.title }}
             </th>
-            <th class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
+            <th
+              v-if="item?.testType === 'OLD'"
+              class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap"
+            >
               {{ item?.price }} <span class="ml-3">sum</span>
             </th>
-
-            <td class="flex items-center px-6 py-4 space-x-4 justify-end">
+            <td
+              v-if="item?.testType === 'OLD'"
+              class="flex items-center px-6 py-4 space-x-4 justify-end"
+            >
               <div
                 @click="editSubcategory(item)"
                 class="font-medium text-blue-600 hover:underline cursor-pointer"
@@ -146,28 +143,29 @@ const subCategoryList = ref([]);
 const openActionModal = ref(false);
 
 const formSubcategory = reactive({
+  ID: "",
   title: "",
   price: null,
-  testType: "NEW",
+  testType: "OLD",
   categoryID: route.params.id,
   feedbacks: [
     {
       id: 1,
-      key: "",
+      key: null,
       percent: "" ? "" : "100",
       description: "",
     },
   ],
 });
 
-const ruleSubcategory = reactive(() => {
+const ruleSubcategory = computed(() => {
   return {
     title: { required },
     price: { required },
   };
 });
 
-const $vSubcategory = useVuelidate(ruleSubcategory, formSubcategory);
+const $v = useVuelidate(ruleSubcategory, formSubcategory);
 
 function fetchSubCategoryList(id) {
   axios
@@ -200,30 +198,64 @@ function deletedTest() {
 const editSubCategory = ref(null);
 
 function addSubcategory() {
-  $vSubcategory.value.$validate();
-  if (!$vSubcategory.value.$error) {
-    axios
-      .post("/test", formSubcategory)
-      .then((res) => {
-        fetchSubCategoryList(route.params.id);
-        toast.success("Muvaffaqiyatli qo'shildi !");
-      })
-      .catch((err) => {
-        toast.error(`Xatolik mavjud !`);
-        console.log(err);
-      })
-      .finally(() => {
-        formSubcategory.title = "";
-        formSubcategory.price = "";
-        $vSubcategory.value.$reset();
-      });
+  $v.value.$validate();
+  if (!$v.value.$error) {
+    if (editSubCategory.value === null) {
+      axios
+        .post("/test", formSubcategory)
+        .then((res) => {
+          fetchSubCategoryList(route.params.id);
+          toast.success("Muvaffaqiyatli qo'shildi !");
+        })
+        .catch((err) => {
+          toast.error(`Xatolik mavjud !`);
+          console.log(err);
+        })
+        .finally(() => {
+          formSubcategory.title = "";
+          formSubcategory.price = "";
+          $v.value.$reset();
+          formSubcategory.feedbacks = [
+            {
+              id: 1,
+              key: null,
+              percent: "" ? "" : "100",
+              description: "",
+            },
+          ];
+        });
+    } else {
+      axios
+        .patch("/test", formSubcategory)
+        .then((res) => {
+        //   fetchSubCategoryList(route.params.id);
+          toast.success("Test tahlilandi !");
+        })
+        .catch((err) => {
+          toast.error(`Xatolik mavjud !`);
+          console.log(err);
+        })
+        .finally(() => {
+          formSubcategory.title = "";
+          formSubcategory.price = "";
+          $v.value.$reset();
+          formSubcategory.feedbacks = [
+            {
+              id: 1,
+              key: null,
+              percent: "" ? "" : "100",
+              description: "",
+            },
+          ];
+        });
+    }
   }
 }
 
 function addFeedbacks() {
   const data = {
     id: formSubcategory.feedbacks.length + 1,
-    key: "",
+    key: null,
     percent: "" ? "" : "100",
     description: "",
   };
@@ -237,11 +269,11 @@ function deleteOption(id) {
 }
 
 function editSubcategory(item) {
-  console.log(item, "item");
   editSubCategory.value = item.id;
+  formSubcategory.ID = item.id;
   formSubcategory.title = item.title;
   formSubcategory.price = item.price;
-  formSubcategory.mark1 = item.mark1;
+  formSubcategory.feedbacks = item.feedbacks;
 }
 
 onMounted(() => {
