@@ -228,7 +228,8 @@ function addSubcategory() {
       axios
         .patch("/test", formSubcategory)
         .then((res) => {
-        //   fetchSubCategoryList(route.params.id);
+          console.log(res);
+          fetchSubCategoryList(route.params.id);
           toast.success("Test tahlilandi !");
         })
         .catch((err) => {
