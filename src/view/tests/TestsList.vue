@@ -121,6 +121,9 @@ function editTest(item) {
     case "CLOSE_QUESTIONS":
       navigateRouter("close", item.id);
       break;
+    case "CATEGORICAL_CHECKBOX":
+      navigateRouter("category", item.id);
+      break;
   }
 }
 function navigateRouter(url, id) {

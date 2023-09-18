@@ -1,6 +1,7 @@
 <template>
   <div class="transition duration-500">
     <div class="border border-gray-600 py-4 px-5 bg-white">
+      <!-- <pre>{{ arr.answerDTOList }}</pre> -->
       <!-- <pre>{{ form.answerCreateDTOList }}</pre> -->
       <div class="flex items-center gap-4 mt-1 mb-4" v-if="!routeId">
         <SingleSelect
@@ -271,7 +272,7 @@ function onSubmit() {
           console.log(res);
           toast.success("Test muvaffaqiyatli tahrirlandi");
           setTimeout(() => {
-            router.push("/list");
+            // router.push("/list");
           }, 1000);
         })
         .catch((err) => {
@@ -289,20 +290,25 @@ function editTest() {
     .then((res) => {
       console.log(res);
       arr.value = res.data;
-      form.title = res.data.questionDTO.title;
-      form.questionType = res.data.questionDTO.questionType;
-      form.image = res.data.questionDTO.image?.url;
-      form.imageID = res.data.questionDTO.image?.id;
-      form.answerCreateDTOList = res.data.questionDTO.answerDTOList.map(
-        (el) => {
-          return {
-            id: el.id,
-            text: el.text,
-            imageID: el.image?.id || null,
-            image: el.image?.url || null,
-          };
-        }
-      );
+      form.title = res.data.title;
+      form.questionType = res.data.questionType;
+      form.image = res.data.image?.url;
+      form.imageID = res.data.image?.id;
+      form.answerCreateDTOList = res.data.answerDTOList.map((el) => {
+        return {
+          id: el.id,
+          text: el.text,
+          imageID: el.image?.id || null,
+          image: el.image?.url || null,
+          points: el.points.map((el) => {
+            return {
+              key: el.key,
+              point: el.point,
+              feedbackId: el.feedbackId,
+            };
+          }),
+        };
+      });
     })
     .catch((err) => {
       console.log(err);
