@@ -154,6 +154,7 @@ const subCategoryList = ref([]);
 const openActionModal = ref(false);
 
 const formSubcategoryNew = reactive({
+  ID:"",
   title: "",
   price: null,
   testType: "NEW",
@@ -210,29 +211,55 @@ const editSubCategory = ref(null);
 function addNew() {
   $vSubcategoryNew.value.$validate();
   if (!$vSubcategoryNew.value.$error) {
-    axios
-      .post("/test", formSubcategoryNew)
-      .then((res) => {
-        fetchSubCategoryList(route.params.id);
-        toast.success("Muvaffaqiyatli qo'shildi !");
-      })
-      .catch((err) => {
-        toast.error(`Xatolik mavjud !`);
-        console.log(err);
-      })
-      .finally(() => {
-        formSubcategoryNew.title = "";
-        formSubcategoryNew.price = "";
-        (formSubcategoryNew.feedbacks = [
-          {
-            id: 1,
-            key: "",
-            percent: "" ? "" : "100",
-            description: "",
-          },
-        ]),
-          $vSubcategoryNew.value.$reset();
-      });
+    if (editSubCategory.value === null) {
+      axios
+        .post("/test", formSubcategoryNew)
+        .then((res) => {
+          fetchSubCategoryList(route.params.id);
+          toast.success("Muvaffaqiyatli qo'shildi !");
+        })
+        .catch((err) => {
+          toast.error(`Xatolik mavjud !`);
+          console.log(err);
+        })
+        .finally(() => {
+          formSubcategoryNew.title = "";
+          formSubcategoryNew.price = "";
+          (formSubcategoryNew.feedbacks = [
+            {
+              id: 1,
+              key: "",
+              percent: "" ? "" : "100",
+              description: "",
+            },
+          ]),
+            $vSubcategoryNew.value.$reset();
+        });
+    } else {
+      axios
+        .patch("/test", formSubcategoryNew)
+        .then((res) => {
+          fetchSubCategoryList(route.params.id);
+          toast.success("Muvaffaqiyatli qo'shildi !");
+        })
+        .catch((err) => {
+          toast.error(`Xatolik mavjud !`);
+          console.log(err);
+        })
+        .finally(() => {
+          formSubcategoryNew.title = "";
+          formSubcategoryNew.price = "";
+          (formSubcategoryNew.feedbacks = [
+            {
+              id: 1,
+              key: "",
+              percent: "" ? "" : "100",
+              description: "",
+            },
+          ]),
+            $vSubcategoryNew.value.$reset();
+        });
+    }
   }
 }
 
@@ -253,8 +280,8 @@ function deleteOption(id) {
 }
 
 function editSubcategory(item) {
-  console.log(item, "item");
   editSubCategory.value = item.id;
+  formSubcategoryNew.ID = item.id;
   formSubcategoryNew.title = item.title;
   formSubcategoryNew.price = item.price;
   formSubcategoryNew.feedbacks = item.feedbacks;

@@ -71,7 +71,7 @@
               :img="item.image"
             />
             <div class="grid grid-cols-2 gap-2">
-              <div class="" v-for="el in item.points" :key="el">
+              <div v-for="el in item.points" :key="el">
                 <!-- <pre>{{ el.point }}</pre> -->
                 <FormInput
                   :label="`${el.key}`"
