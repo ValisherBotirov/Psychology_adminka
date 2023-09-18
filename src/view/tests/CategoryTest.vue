@@ -128,7 +128,7 @@ const subcategoryData = computed(() =>
 const routeId = route.query.id;
 
 const form = reactive({
-  questionType: "Category",
+  questionType: "CATEGORICAL_CHECKBOX",
   title: "",
   imageID: null,
   testID: "",
@@ -189,7 +189,13 @@ function addNewOption() {
     text: "",
     imageID: null,
     image: "",
-    points: test.value,
+    points: test.value.map((el) => {
+      return {
+        key: el.key,
+        point: null,
+        feedbackId: el.id,
+      };
+    }),
   };
   form.answerCreateDTOList.push(option);
 }
@@ -284,7 +290,7 @@ function editTest() {
       console.log(res);
       arr.value = res.data;
       form.title = res.data.questionDTO.title;
-      form.testType = res.data.questionDTO.testType;
+      form.questionType = res.data.questionDTO.questionType;
       form.image = res.data.questionDTO.image?.url;
       form.imageID = res.data.questionDTO.image?.id;
       form.answerCreateDTOList = res.data.questionDTO.answerDTOList.map(
