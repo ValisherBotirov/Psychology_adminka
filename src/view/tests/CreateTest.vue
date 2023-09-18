@@ -8,9 +8,7 @@
         <SButton variant="info"> Testlar bo'limiga o'tish</SButton>
       </router-link>
     </div>
-    <div
-      class="mt-5 flex gap-4 text-white  py-3 mx-auto justify-between"
-    >
+    <div class="mt-5 flex gap-4 text-white py-3 mx-auto justify-between">
       <router-link
         to="/test/one"
         class="bg-blue-500 py-3 px-4 transition duration-500 rounded-md"
@@ -29,12 +27,12 @@
         :active-class="'bg-red-800'"
         >Yopiq variantlik test qo'shish</router-link
       >
-        <router-link
-                to="/test/category"
-                class="bg-blue-500 py-3 px-4 transition duration-500 rounded-md"
-                :active-class="'bg-red-800'"
+      <router-link
+        to="/test/category"
+        class="bg-blue-500 py-3 px-4 transition duration-500 rounded-md"
+        :active-class="'bg-red-800'"
         >Kategoriyali test qo'shish</router-link
-        >
+      >
     </div>
 
     <div class="mt-4">
@@ -47,7 +45,6 @@
 
 <script setup lang="ts">
 import SButton from "@/components/buttons/SButton.vue";
-
 </script>
 
 <style>
