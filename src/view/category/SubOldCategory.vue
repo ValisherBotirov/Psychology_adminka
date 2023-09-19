@@ -175,7 +175,12 @@ const $v = useVuelidate(ruleSubcategory, formSubcategory);
 
 function feedbackAdd() {
   axios
-    .post(`/test/add-feedback/${formSubcategory.ID}`, formSubcategory.feedbacks)
+    .post(
+      `/test/add-feedback/${formSubcategory.ID}`,
+      formSubcategory.feedbacks.map((item) => {
+        return JSON.parse(item);
+      })
+    )
     .then((res) => {
       console.log(res);
     })
@@ -183,7 +188,6 @@ function feedbackAdd() {
       console.log(err);
     });
 }
-
 function fetchSubCategoryList(id) {
   axios
     .get("test/get/all/" + id)
@@ -286,11 +290,11 @@ function addFeedbacks() {
   }
 }
 
-// function deleteOption(id) {
-//   formSubcategory.feedbacks = formSubcategory.feedbacks.filter(
-//     (el) => el.id !== id
-//   );
-// }
+function deleteOption(id) {
+  formSubcategory.feedbacks = formSubcategory.feedbacks.filter(
+    (el) => el.id !== id
+  );
+}
 
 function editSubcategory(item) {
   editSubCategory.value = `editButton`;
