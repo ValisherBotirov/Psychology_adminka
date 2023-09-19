@@ -229,7 +229,7 @@ function addNew() {
             {
               id: 1,
               key: "",
-              percent: "" ? "" : "100",
+              percent: null ? null : 100,
               description: "",
             },
           ]),
@@ -253,7 +253,7 @@ function addNew() {
             {
               id: 1,
               key: "",
-              percent: "" ? "" : "100",
+              percent: null ? null : 100,
               description: "",
             },
           ]),
@@ -267,7 +267,7 @@ function addFeedbacks() {
   const data = {
     id: formSubcategoryNew.feedbacks.length + 1,
     key: "",
-    percent: "" ? "" : "100",
+    percent: null ? null : 100,
     description: "",
   };
   formSubcategoryNew.feedbacks.push(data);

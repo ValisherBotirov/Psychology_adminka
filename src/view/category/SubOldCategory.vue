@@ -35,6 +35,13 @@
           <i class="fa-solid fa-trash text-[red] text-[20px]"></i>
         </div>
       </div>
+      <div
+        v-if="addFeedbacksForEdit === `edit`"
+        class="flex justify-end"
+        @click="feedbackAdd"
+      >
+        <SButton variant="info"> Feedbackni saqlash </SButton>
+      </div>
       <div class="flex gap-3 items-end mt-6 border-t pt-3">
         <FormInput
           label="Test nomini  kiriting"
@@ -150,9 +157,8 @@ const formSubcategory = reactive({
   categoryID: route.params.id,
   feedbacks: [
     {
-      id: 1,
       key: null,
-      percent: "" ? "" : "100",
+      percent: Number(null) ? Number(null) : Number(100),
       description: "",
     },
   ],
@@ -166,6 +172,17 @@ const ruleSubcategory = computed(() => {
 });
 
 const $v = useVuelidate(ruleSubcategory, formSubcategory);
+
+function feedbackAdd() {
+  axios
+    .post(`/test/add-feedback/${formSubcategory.ID}`, formSubcategory.feedbacks)
+    .then((res) => {
+      console.log(res);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+}
 
 function fetchSubCategoryList(id) {
   axios
@@ -194,13 +211,12 @@ function deletedTest() {
       console.log(err);
     });
 }
-
-const editSubCategory = ref(null);
-
+const editSubCategory = ref("create");
+const addFeedbacksForEdit = ref();
 function addSubcategory() {
   $v.value.$validate();
   if (!$v.value.$error) {
-    if (editSubCategory.value === null) {
+    if (editSubCategory.value === `create`) {
       axios
         .post("/test", formSubcategory)
         .then((res) => {
@@ -217,60 +233,67 @@ function addSubcategory() {
           $v.value.$reset();
           formSubcategory.feedbacks = [
             {
-              id: 1,
+              // id: 1,
               key: null,
-              percent: "" ? "" : "100",
-              description: "",
-            },
-          ];
-        });
-    } else {
-      axios
-        .patch("/test", formSubcategory)
-        .then((res) => {
-          console.log(res);
-          fetchSubCategoryList(route.params.id);
-          toast.success("Test tahlilandi !");
-        })
-        .catch((err) => {
-          toast.error(`Xatolik mavjud !`);
-          console.log(err);
-        })
-        .finally(() => {
-          formSubcategory.title = "";
-          formSubcategory.price = "";
-          $v.value.$reset();
-          formSubcategory.feedbacks = [
-            {
-              id: 1,
-              key: null,
-              percent: "" ? "" : "100",
+              percent: 0 ? 0 : 100,
               description: "",
             },
           ];
         });
     }
+    //  else if (addFeedbacksForEdit.value === "edit") {
+    //   axios
+    //     .post(`/test/add-feedback/${route.params.id}`, formSubcategory)
+    //     .then((res) => {
+    //       console.log(res);
+    //       fetchSubCategoryList(route.params.id);
+    //       toast.success("Test tahlilandi !");
+    //     })
+    //     .catch((err) => {
+    //       toast.error(`Xatolik mavjud !`);
+    //       console.log(err);
+    //     })
+    //     .finally(() => {
+    //       formSubcategory.title = "";
+    //       formSubcategory.price = "";
+    //       $v.value.$reset();
+    //       formSubcategory.feedbacks = [
+    //         {
+    //           // id: 1,
+    //           key: null,
+    //           percent: null ? null : 100,
+    //           description: "",
+    //         },
+    //       ];
+    //     });
+    // }
   }
 }
 
 function addFeedbacks() {
   const data = {
-    id: formSubcategory.feedbacks.length + 1,
+    // id: formSubcategory.feedbacks.length + 1,
     key: null,
-    percent: "" ? "" : "100",
+    percent: Number(100),
     description: "",
   };
   formSubcategory.feedbacks.push(data);
+
+  if (editSubCategory.value === `editButton`) {
+    return (addFeedbacksForEdit.value = "edit");
+  } else {
+    return editSubCategory.value === `create`;
+  }
 }
 
-function deleteOption(id) {
-  formSubcategory.feedbacks = formSubcategory.feedbacks.filter(
-    (el) => el.id !== id
-  );
-}
+// function deleteOption(id) {
+//   formSubcategory.feedbacks = formSubcategory.feedbacks.filter(
+//     (el) => el.id !== id
+//   );
+// }
 
 function editSubcategory(item) {
-  editSubCategory.value = item.id;
+  editSubCategory.value = `editButton`;
   formSubcategory.ID = item.id;
   formSubcategory.title = item.title;
   formSubcategory.price = item.price;
