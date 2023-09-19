@@ -36,6 +36,9 @@
           <i class="fa-solid fa-trash text-[red] text-[20px]"></i>
         </div>
       </div>
+      <div v-if="checkFeedback" class="flex justify-end" @click="feedbackAdd">
+        <SButton variant="info"> Feedbackni saqlash </SButton>
+      </div>
       <div class="flex gap-3 items-end mt-6 border-t pt-3">
         <FormInput
           label="Test nomini  kiriting"
@@ -154,7 +157,7 @@ const subCategoryList = ref([]);
 const openActionModal = ref(false);
 
 const formSubcategoryNew = reactive({
-  ID:"",
+  ID: "",
   title: "",
   price: null,
   testType: "NEW",
@@ -206,12 +209,13 @@ function deletedTest() {
     });
 }
 
-const editSubCategory = ref(null);
+const isEditTest = ref(false);
+const checkFeedback = ref(false);
 
 function addNew() {
   $vSubcategoryNew.value.$validate();
   if (!$vSubcategoryNew.value.$error) {
-    if (editSubCategory.value === null) {
+    if (!isEditTest.value) {
       axios
         .post("/test", formSubcategoryNew)
         .then((res) => {
@@ -271,20 +275,52 @@ function addFeedbacks() {
     description: "",
   };
   formSubcategoryNew.feedbacks.push(data);
+  checkFeedback.value = true;
 }
 
 function deleteOption(id) {
+  if (!isEditTest.value)
   formSubcategoryNew.feedbacks = formSubcategoryNew.feedbacks.filter(
     (el) => el.id !== id
   );
+  else {
+    axios
+      .delete(`test/delete-feedback/${route.params.id}/${id}`)
+      .then((res) => {
+        console.log(res);
+        toast.success("Feedback muvaffaqiyatli o'chirildi");
+        formSubcategoryNew.feedbacks = formSubcategoryNew.feedbacks.filter(
+    (el) => el.id !== id
+  );
+      })
+      .catch((err) => {
+        console.log(err);
+        toast.error("Xatolik yuz berdi!");
+      });
+  }
 }
 
 function editSubcategory(item) {
-  editSubCategory.value = item.id;
+  isEditTest.value = true;
   formSubcategoryNew.ID = item.id;
   formSubcategoryNew.title = item.title;
   formSubcategoryNew.price = item.price;
   formSubcategoryNew.feedbacks = item.feedbacks;
+}
+
+function feedbackAdd() {
+  axios
+    .post(
+      `/test/add-feedback/${formSubcategoryNew.ID}`,
+      formSubcategoryNew.feedbacks[formSubcategoryNew.feedbacks.length - 1]
+    )
+    .then((res) => {
+      console.log(res);
+      formSubcategoryNew.feedbacks = res.data.feedbacks;
+    })
+    .catch((err) => {
+      console.log(err);
+    });
 }
 
 onMounted(() => {
