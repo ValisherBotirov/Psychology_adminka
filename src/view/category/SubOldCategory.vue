@@ -35,11 +35,7 @@
           <i class="fa-solid fa-trash text-[red] text-[20px]"></i>
         </div>
       </div>
-      <div
-        v-if="addFeedbacksForEdit === `edit`"
-        class="flex justify-end"
-        @click="feedbackAdd"
-      >
+      <div v-if="checkFeedback" class="flex justify-end" @click="feedbackAdd">
         <SButton variant="info"> Feedbackni saqlash </SButton>
       </div>
       <div class="flex gap-3 items-end mt-6 border-t pt-3">
@@ -98,7 +94,7 @@
               class="flex items-center px-6 py-4 space-x-4 justify-end"
             >
               <div
-                @click="editSubcategory(item)"
+                @click="editSubcategoryFunc(item)"
                 class="font-medium text-blue-600 hover:underline cursor-pointer"
               >
                 <i
@@ -177,12 +173,11 @@ function feedbackAdd() {
   axios
     .post(
       `/test/add-feedback/${formSubcategory.ID}`,
-      formSubcategory.feedbacks.map((item) => {
-        return JSON.parse(item);
-      })
+      formSubcategory.feedbacks[formSubcategory.feedbacks.length - 1]
     )
     .then((res) => {
       console.log(res);
+      formSubcategory.feedbacks = res.data.feedbacks;
     })
     .catch((err) => {
       console.log(err);
@@ -216,11 +211,69 @@ function deletedTest() {
     });
 }
 const editSubCategory = ref("create");
+const isEditTest = ref(false);
+const checkFeedback = ref(false);
 const addFeedbacksForEdit = ref();
+// function addSubcategory() {
+//   $v.value.$validate();
+//   if (!$v.value.$error) {
+//     if (editSubCategory.value === `create`) {
+//       axios
+//         .post("/test", formSubcategory)
+//         .then((res) => {
+//           fetchSubCategoryList(route.params.id);
+//           toast.success("Muvaffaqiyatli qo'shildi !");
+//         })
+//         .catch((err) => {
+//           toast.error(`Xatolik mavjud !`);
+//           console.log(err);
+//         })
+//         .finally(() => {
+//           formSubcategory.title = "";
+//           formSubcategory.price = "";
+//           $v.value.$reset();
+//           formSubcategory.feedbacks = [
+//             {
+//               // id: 1,
+//               key: null,
+//               percent: 0 ? 0 : 100,
+//               description: "",
+//             },
+//           ];
+//         });
+//     } else if (addFeedbacksForEdit.value === "edit") {
+//       axios
+//         .post(`/test/add-feedback/${route.params.id}`, formSubcategory)
+//         .then((res) => {
+//           console.log(res);
+//           fetchSubCategoryList(route.params.id);
+//           toast.success("Test tahlilandi !");
+//         })
+//         .catch((err) => {
+//           toast.error(`Xatolik mavjud !`);
+//           console.log(err);
+//         })
+//         .finally(() => {
+//           formSubcategory.title = "";
+//           formSubcategory.price = "";
+//           $v.value.$reset();
+//           formSubcategory.feedbacks = [
+//             {
+//               // id: 1,
+//               key: null,
+//               percent: null ? null : 100,
+//               description: "",
+//             },
+//           ];
+//         });
+//     }
+//   }
+// }
+
 function addSubcategory() {
   $v.value.$validate();
   if (!$v.value.$error) {
-    if (editSubCategory.value === `create`) {
+    if (!isEditTest.value) {
       axios
         .post("/test", formSubcategory)
         .then((res) => {
@@ -244,33 +297,33 @@ function addSubcategory() {
             },
           ];
         });
+    } else {
+      axios
+        .patch(`/test`, formSubcategory)
+        .then((res) => {
+          console.log(res);
+          fetchSubCategoryList(route.params.id);
+          toast.success("Test tahrirlandi !");
+        })
+        .catch((err) => {
+          toast.error(`Xatolik mavjud !`);
+          console.log(err);
+        })
+        .finally(() => {
+          formSubcategory.title = "";
+          formSubcategory.price = "";
+          isEditTest.value = false;
+          $v.value.$reset();
+          formSubcategory.feedbacks = [
+            {
+              // id: 1,
+              key: null,
+              percent: null ? null : 100,
+              description: "",
+            },
+          ];
+        });
     }
-    //  else if (addFeedbacksForEdit.value === "edit") {
-    //   axios
-    //     .post(`/test/add-feedback/${route.params.id}`, formSubcategory)
-    //     .then((res) => {
-    //       console.log(res);
-    //       fetchSubCategoryList(route.params.id);
-    //       toast.success("Test tahlilandi !");
-    //     })
-    //     .catch((err) => {
-    //       toast.error(`Xatolik mavjud !`);
-    //       console.log(err);
-    //     })
-    //     .finally(() => {
-    //       formSubcategory.title = "";
-    //       formSubcategory.price = "";
-    //       $v.value.$reset();
-    //       formSubcategory.feedbacks = [
-    //         {
-    //           // id: 1,
-    //           key: null,
-    //           percent: null ? null : 100,
-    //           description: "",
-    //         },
-    //       ];
-    //     });
-    // }
   }
 }
 
@@ -283,10 +336,8 @@ function addFeedbacks() {
   };
   formSubcategory.feedbacks.push(data);
 
-  if (editSubCategory.value === `editButton`) {
-    return (addFeedbacksForEdit.value = "edit");
-  } else {
-    return editSubCategory.value === `create`;
+  if (isEditTest.value) {
+    checkFeedback.value = true;
   }
 }
 
@@ -296,8 +347,8 @@ function deleteOption(id) {
   );
 }
 
-function editSubcategory(item) {
-  editSubCategory.value = `editButton`;
+function editSubcategoryFunc(item) {
+  isEditTest.value = true;
   formSubcategory.ID = item.id;
   formSubcategory.title = item.title;
   formSubcategory.price = item.price;
