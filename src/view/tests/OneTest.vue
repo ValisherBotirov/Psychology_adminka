@@ -74,7 +74,7 @@
               type="number"
               custom-class="py-2"
               class="w-full"
-              v-model="item.points[0].point"
+              v-model="item.points[0].value"
             />
           </div>
         </div>
@@ -128,6 +128,7 @@ const form = reactive({
   testID: "",
   image: "",
   correctCloseAnswer: "",
+  pointCloseAnswer: null,
   answerCreateDTOList: [
     {
       id: 1,
@@ -137,7 +138,7 @@ const form = reactive({
       points: [
         {
           feedbackId: null,
-          point: "",
+          value: "",
         },
       ],
     },
@@ -149,7 +150,7 @@ const form = reactive({
       points: [
         {
           feedbackId: null,
-          point: "",
+          value: "",
         },
       ],
     },
@@ -173,7 +174,7 @@ function addNewOption() {
     points: [
       {
         feedbackId: null,
-        point: "",
+        value: "",
       },
     ],
   };
@@ -283,7 +284,7 @@ function editTest() {
           points: [
             {
               feedbackId: el.points[0].feedbackId,
-              point: el.points[0].point,
+              value: el.points[0].value,
             },
           ],
         };
