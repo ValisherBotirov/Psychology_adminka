@@ -210,65 +210,8 @@ function deletedTest() {
       console.log(err);
     });
 }
-const editSubCategory = ref("create");
 const isEditTest = ref(false);
 const checkFeedback = ref(false);
-const addFeedbacksForEdit = ref();
-// function addSubcategory() {
-//   $v.value.$validate();
-//   if (!$v.value.$error) {
-//     if (editSubCategory.value === `create`) {
-//       axios
-//         .post("/test", formSubcategory)
-//         .then((res) => {
-//           fetchSubCategoryList(route.params.id);
-//           toast.success("Muvaffaqiyatli qo'shildi !");
-//         })
-//         .catch((err) => {
-//           toast.error(`Xatolik mavjud !`);
-//           console.log(err);
-//         })
-//         .finally(() => {
-//           formSubcategory.title = "";
-//           formSubcategory.price = "";
-//           $v.value.$reset();
-//           formSubcategory.feedbacks = [
-//             {
-//               // id: 1,
-//               key: null,
-//               percent: 0 ? 0 : 100,
-//               description: "",
-//             },
-//           ];
-//         });
-//     } else if (addFeedbacksForEdit.value === "edit") {
-//       axios
-//         .post(`/test/add-feedback/${route.params.id}`, formSubcategory)
-//         .then((res) => {
-//           console.log(res);
-//           fetchSubCategoryList(route.params.id);
-//           toast.success("Test tahlilandi !");
-//         })
-//         .catch((err) => {
-//           toast.error(`Xatolik mavjud !`);
-//           console.log(err);
-//         })
-//         .finally(() => {
-//           formSubcategory.title = "";
-//           formSubcategory.price = "";
-//           $v.value.$reset();
-//           formSubcategory.feedbacks = [
-//             {
-//               // id: 1,
-//               key: null,
-//               percent: null ? null : 100,
-//               description: "",
-//             },
-//           ];
-//         });
-//     }
-//   }
-// }
 
 function addSubcategory() {
   $v.value.$validate();
@@ -342,9 +285,25 @@ function addFeedbacks() {
 }
 
 function deleteOption(id) {
-  formSubcategory.feedbacks = formSubcategory.feedbacks.filter(
-    (el) => el.id !== id
-  );
+  if (!isEditTest.value)
+    formSubcategory.feedbacks = formSubcategory.feedbacks.filter(
+      (el) => el.id !== id
+    );
+  else {
+    axios
+      .delete(`test/delete-feedback/${route.params.id}/${id}`)
+      .then((res) => {
+        console.log(res);
+        toast.success("Feedback muvaffaqiyatli o'chirildi");
+        formSubcategory.feedbacks = formSubcategory.feedbacks.filter(
+          (el) => el.id !== id
+        );
+      })
+      .catch((err) => {
+        console.log(err);
+        toast.error("Xatolik yuz berdi!");
+      });
+  }
 }
 
 function editSubcategoryFunc(item) {
