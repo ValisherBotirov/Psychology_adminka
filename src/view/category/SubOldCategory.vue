@@ -256,6 +256,7 @@ function addSubcategory() {
           formSubcategory.title = "";
           formSubcategory.price = "";
           isEditTest.value = false;
+          checkFeedback.value = false
           $v.value.$reset();
           formSubcategory.feedbacks = [
             {

@@ -229,6 +229,7 @@ function addNew() {
         .finally(() => {
           formSubcategoryNew.title = "";
           formSubcategoryNew.price = "";
+          
           (formSubcategoryNew.feedbacks = [
             {
               id: 1,
@@ -253,6 +254,7 @@ function addNew() {
         .finally(() => {
           formSubcategoryNew.title = "";
           formSubcategoryNew.price = "";
+          
           (formSubcategoryNew.feedbacks = [
             {
               id: 1,
@@ -262,6 +264,8 @@ function addNew() {
             },
           ]),
             $vSubcategoryNew.value.$reset();
+            isEditTest.value = false;
+          checkFeedback.value = false
         });
     }
   }
