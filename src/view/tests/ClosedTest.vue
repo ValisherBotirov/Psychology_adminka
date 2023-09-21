@@ -39,8 +39,8 @@
           custom-class="py-[10px]"
           label="Savol uchun ball belgilang"
           class="w-full"
-          v-model="form.score"
-          :error="$v.score.$error"
+          v-model="form.pointCloseAnswer"
+          :error="$v.pointCloseAnswer.$error"
         />
       </div>
       <div class="flex justify-end mt-6">
@@ -88,28 +88,17 @@ const form = reactive({
   questionType: "CLOSE_QUESTIONS",
   title: "",
   imageID: "",
-  testID: "",
+  testID: null,
   image: "",
   correctCloseAnswer: "",
-  score: null,
-  answerCreateDTOList: [
-    {
-      text: null,
-      imageID: null,
-      points: [
-        {
-          feedbackId: 0,
-          point: "",
-        },
-      ],
-    },
-  ],
+  pointCloseAnswer: null,
+  answerCreateDTOList: null,
 });
 
 const rule = computed(() => {
   return {
     correctCloseAnswer: { required },
-    score: { required },
+    pointCloseAnswer: { required },
     testID: { required },
   };
 });
@@ -130,7 +119,6 @@ function onSubmit() {
     $v.value.$validate();
     if (!$v.value.$error) {
       console.log(form, "opt");
-      form.answerCreateDTOList[0].points[0].point = form.score;
       axios
         .post("/question", form)
         .then((res) => {
@@ -141,35 +129,23 @@ function onSubmit() {
           toast.error("Qo'shishda xatolik yuz berdi!");
         })
         .finally(() => {
-          // setTimeout(() => {
-          //   window.location.reload();
-          // }, 2000);
+          setTimeout(() => {
+            window.location.reload();
+          }, 2000);
         });
     }
   } else if (routeId) {
     $v.value.$validate();
-    if (typeof routeId === "string") {
-      form.testID = routeId;
-    }
-    console.log("edit");
+
+    form.testID = Number(routeId);
     if (!$v.value.$error) {
       const editObj = {
         id: +routeId,
         title: form.title,
         imageID: form.imageID,
         correctCloseAnswer: form.correctCloseAnswer,
-        answerCreateDTOList: [
-          {
-            text: null,
-            imageID: null,
-            points: [
-              {
-                feedbackId: 0,
-                point: form.score,
-              },
-            ],
-          },
-        ],
+        pointCloseAnswer: form.pointCloseAnswer,
+        answerCreateDTOList: null,
       };
       console.log(editObj, "opt");
       axios
@@ -178,7 +154,7 @@ function onSubmit() {
           console.log(res);
           toast.success("Test muvaffaqiyatli tahrirlandi");
           setTimeout(() => {
-            // router.push("/list");
+            router.push("/list");
           }, 1000);
         })
         .catch((err) => {
@@ -194,7 +170,7 @@ function editTest() {
     .then((res) => {
       form.title = res.data.title;
       form.correctCloseAnswer = res.data.correctCloseAnswer;
-      form.score = res.data.answerDTOList[0]?.points[0]?.point;
+      form.pointCloseAnswer = res.data.pointCloseAnswer;
       form.image = res.data.image?.url;
       form.imageID = res.data.image?.id;
     })
