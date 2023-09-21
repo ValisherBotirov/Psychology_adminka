@@ -1,8 +1,8 @@
 <template>
   <div class="transition duration-500">
     <div class="border border-gray-600 py-4 px-5 bg-white">
-      <!-- <pre>{{ arr.answerDTOList }}</pre> -->
       <!-- <pre>{{ form.answerCreateDTOList }}</pre> -->
+      <!-- <pre>{{ test }}</pre> -->
       <div class="flex items-center gap-4 mt-1 mb-4" v-if="!routeId">
         <SingleSelect
           v-model="form.testID"
@@ -79,7 +79,7 @@
                   placeholder="0"
                   customClass="p-2"
                   type="number"
-                  v-model="el.point"
+                  v-model="el.value"
                 />
               </div>
             </div>
@@ -144,12 +144,12 @@ const form = reactive({
       points: [
         {
           key: "Shifokor",
-          point: null,
+          value: null,
           feedbackId: null,
         },
         {
           key: "Dasturchi",
-          point: null,
+          value: null,
           feedbackId: null,
         },
       ],
@@ -162,12 +162,12 @@ const form = reactive({
       points: [
         {
           key: "Shifokor",
-          point: null,
+          value: null,
           feedbackId: null,
         },
         {
           key: "Dasturchi",
-          point: null,
+          value: null,
           feedbackId: null,
         },
       ],
@@ -193,8 +193,8 @@ function addNewOption() {
     points: test.value.map((el) => {
       return {
         key: el.key,
-        point: null,
-        feedbackId: el.id,
+        value: null,
+        feedbackId: el.feedbackId,
       };
     }),
   };
@@ -262,7 +262,20 @@ function onSubmit() {
         id: +routeId,
         title: form.title,
         imageID: form.imageID,
-        answerUpdateDTOList: form.answerCreateDTOList,
+        answerUpdateDTOList: form.answerCreateDTOList.map((el) => {
+          return {
+            id: el.id,
+            text: el.text,
+            imageID: el.image?.id || null,
+            image: el.image?.url || null,
+            points: el.points.map((el) => {
+              return {
+                value: el.value,
+                feedbackId: el.feedbackId,
+              };
+            }),
+          };
+        }),
         correctCloseAnswer: null,
       };
       console.log(editObj, "opt");
@@ -303,7 +316,7 @@ function editTest() {
           points: el.points.map((el) => {
             return {
               key: el.key,
-              point: el.point,
+              value: el.value,
               feedbackId: el.feedbackId,
             };
           }),
@@ -323,7 +336,7 @@ function fetchTestCategory(id) {
       test.value = res.data.map((el) => {
         return {
           key: el.key,
-          point: null,
+          value: null,
           feedbackId: el.id,
         };
       });
@@ -331,7 +344,7 @@ function fetchTestCategory(id) {
         item.points = res.data.map((el) => {
           return {
             key: el.key,
-            point: null,
+            value: null,
             feedbackId: el.id,
           };
         });
@@ -346,7 +359,8 @@ onMounted(() => {
   categoryStore.fetchSubCategoryAll();
   if (routeId) {
     editTest();
+  } else {
+    toast.info("Birinchi navbatda test nomini tanlang!");
   }
-  toast.info("Birinchi navbatda test nomini tanlang!");
 });
 </script>
