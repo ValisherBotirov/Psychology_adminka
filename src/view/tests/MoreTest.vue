@@ -278,8 +278,8 @@ function editTest() {
           image: el.image?.url || null,
           points: [
             {
-              feedbackId: el.points[0].feedbackId,
-              value: el.points[0].value,
+              feedbackId: el.points[0]?.feedbackId,
+              value: el.points[0]?.value,
             },
           ],
         };
