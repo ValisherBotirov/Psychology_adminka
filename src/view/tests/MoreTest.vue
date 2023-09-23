@@ -1,6 +1,5 @@
 <template>
   <div class="transition duration-500">
-    <!-- <pre>{{ arr }}</pre> -->
     <div class="border border-gray-600 py-4 px-5 bg-white">
       <div class="flex items-center gap-4 mt-1 mb-4" v-if="!routeId">
         <SingleSelect
@@ -178,9 +177,24 @@ function addNewOption() {
 }
 
 function deleteOption(id) {
-  form.answerCreateDTOList = form.answerCreateDTOList.filter(
-    (el) => el.id !== id
-  );
+  if (!routeId) {
+    form.answerCreateDTOList = form.answerCreateDTOList.filter(
+      (el) => el.id !== id
+    );
+  } else {
+    console.log("delete swagger", id);
+    axios
+      .delete(`question/delete-answer?question-id=${routeId}&answer-id=${id}`)
+      .then((res) => {
+        console.log(res);
+        form.answerCreateDTOList = form.answerCreateDTOList.filter(
+          (el) => el.id !== id
+        );
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
 }
 
 // work images input
@@ -220,7 +234,7 @@ function onSubmit() {
         })
         .finally(() => {
           setTimeout(() => {
-            // window.location.reload();
+            window.location.reload();
           }, 2000);
         });
 
