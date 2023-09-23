@@ -27,13 +27,11 @@
         v-for="i in 10"
         :key="i"
       ></BlockPreloader>
-
       <table class="w-full text-sm text-left text-gray-500" v-else>
         <thead class="text-xs text-gray-700 uppercase bg-gray-50">
           <tr>
             <th scope="col" class="p-4">#</th>
             <th scope="col" class="px-6 py-3">Kategoriya nomi</th>
-
             <th scope="col" class="px-6 py-3 text-end pr-[40px]">Amallar</th>
           </tr>
         </thead>
@@ -65,7 +63,7 @@
               </div>
               <div
                 class="font-medium text-red-600 hover:underline cursor-pointer"
-                @click="productDelete(item?.ID)"
+                @click="productDelete(item?.id)"
               >
                 <i class="fa-solid fa-trash text-[red] text-[20px]"></i>
               </div>
@@ -151,7 +149,7 @@ function addCategory() {
 const isEdit = ref(null);
 
 function itemEdit(item) {
-  isEdit.value = item.ID;
+  isEdit.value = item.id;
   formCategory.title = item.name;
 }
 
