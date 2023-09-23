@@ -148,7 +148,7 @@
           to="/site-data"
         >
           <i class="fa-solid fa-folder-plus text-[#3751FF]"></i>
-          <span class="mx-3">Boshqalar</span>
+          <span class="mx-3">Sayt ma'lumotlari</span>
         </RouterLink>
       </div>
     </nav>
