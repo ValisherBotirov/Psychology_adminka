@@ -202,9 +202,24 @@ function addNewOption() {
 }
 
 function deleteOption(id) {
-  form.answerCreateDTOList = form.answerCreateDTOList.filter(
-    (el) => el.id !== id
-  );
+  if (!routeId) {
+    form.answerCreateDTOList = form.answerCreateDTOList.filter(
+      (el) => el.id !== id
+    );
+  } else {
+    console.log("delete swagger", id);
+    axios
+      .delete(`question/delete-answer?question-id=${routeId}&answer-id=${id}`)
+      .then((res) => {
+        console.log(res);
+        form.answerCreateDTOList = form.answerCreateDTOList.filter(
+          (el) => el.id !== id
+        );
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
 }
 
 // work images input
@@ -247,9 +262,9 @@ function onSubmit() {
           toast.error("Qo'shishda xatolik yuz berdi!");
         })
         .finally(() => {
-          // setTimeout(() => {
-          //   window.location.reload();
-          // }, 2000);
+          setTimeout(() => {
+            window.location.reload();
+          }, 2000);
         });
     }
   } else if (routeId) {
@@ -285,7 +300,7 @@ function onSubmit() {
           console.log(res);
           toast.success("Test muvaffaqiyatli tahrirlandi");
           setTimeout(() => {
-            // router.push("/list");
+            router.push("/list");
           }, 1000);
         })
         .catch((err) => {
