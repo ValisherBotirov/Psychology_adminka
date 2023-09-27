@@ -229,7 +229,7 @@ function addNew() {
         .finally(() => {
           formSubcategoryNew.title = "";
           formSubcategoryNew.price = "";
-          
+
           (formSubcategoryNew.feedbacks = [
             {
               id: 1,
@@ -254,7 +254,7 @@ function addNew() {
         .finally(() => {
           formSubcategoryNew.title = "";
           formSubcategoryNew.price = "";
-          
+
           (formSubcategoryNew.feedbacks = [
             {
               id: 1,
@@ -264,8 +264,8 @@ function addNew() {
             },
           ]),
             $vSubcategoryNew.value.$reset();
-            isEditTest.value = false;
-          checkFeedback.value = false
+          isEditTest.value = false;
+          checkFeedback.value = false;
         });
     }
   }
@@ -279,14 +279,17 @@ function addFeedbacks() {
     description: "",
   };
   formSubcategoryNew.feedbacks.push(data);
-  checkFeedback.value = true;
+
+  if (isEditTest.value) {
+    checkFeedback.value = true;
+  }
 }
 
 function deleteOption(id) {
   if (!isEditTest.value)
-  formSubcategoryNew.feedbacks = formSubcategoryNew.feedbacks.filter(
-    (el) => el.id !== id
-  );
+    formSubcategoryNew.feedbacks = formSubcategoryNew.feedbacks.filter(
+      (el) => el.id !== id
+    );
   else {
     axios
       .delete(`test/delete-feedback/${route.params.id}/${id}`)
@@ -294,8 +297,8 @@ function deleteOption(id) {
         console.log(res);
         toast.success("Feedback muvaffaqiyatli o'chirildi");
         formSubcategoryNew.feedbacks = formSubcategoryNew.feedbacks.filter(
-    (el) => el.id !== id
-  );
+          (el) => el.id !== id
+        );
       })
       .catch((err) => {
         console.log(err);
