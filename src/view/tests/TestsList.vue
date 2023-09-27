@@ -153,7 +153,7 @@ async function deleteTest() {
 
 onMounted(() => {
   categoryStore.fetchSubCategoryAll();
-  toast.info("Tets kategoriyalaridan birini tanlang!");
+  toast.info("Test kategoriyalaridan birini tanlang !");
 });
 </script>
 
