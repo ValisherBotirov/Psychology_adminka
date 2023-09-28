@@ -19,15 +19,31 @@ export const useAuthStore = defineStore("auth", {
         const token = user.data.accessToken;
         sessionStorage.setItem("token", token);
         sessionStorage.setItem("refreshToken", user.data.refreshToken);
-        sessionStorage.setItem("userRole", "ADMIN");
-        // await this.getUserRole(token)
-        this.user.isRegiter = 1;
-        sessionStorage.setItem("isRegister", 1);
-        toast.success("Tizimga muvaffaqiyatli kirdingiz!");
-        await router.push("/");
+        await this.getUserRole(token);
       } catch (err) {
         toast.error("Telefon raqam yoki parol xato!");
       }
+    },
+
+    async getUserRole() {
+      axios
+        .get("user/current")
+        .then((res) => {
+          console.log(res.data.role, "user role");
+          if (res.data.role === "ADMIN") {
+            sessionStorage.setItem("userRole", "ADMIN");
+            this.user.isRegiter = 1;
+            sessionStorage.setItem("isRegister", 1);
+            toast.success("Tizimga muvaffaqiyatli kirdingiz!");
+            router.push("/");
+          } else {
+            toast.error("Tizimga faqat admin kiroladi!");
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+          toast.error("Telefon raqam yoki parol xato!");
+        });
     },
 
     async refreshToken() {
@@ -56,7 +72,7 @@ export const useAuthStore = defineStore("auth", {
       return this.user;
     },
     massage() {
-      return this.massageCount = localStorage.getItem("massage");
+      return (this.massageCount = localStorage.getItem("massage"));
     },
   },
 });
