@@ -38,24 +38,39 @@
       <div v-if="checkFeedback" class="flex justify-end" @click="feedbackAdd">
         <SButton variant="info"> Feedbackni saqlash </SButton>
       </div>
-      <div class="flex gap-3 items-end mt-6 border-t pt-3">
-        <FormInput
-          label="Test nomini  kiriting"
-          placeholder="Test nomini  kiriting"
-          v-model="formSubcategory.title"
-          :error="$v.title.$error"
-          customClass="!p-2 bg-white"
-          class="w-full"
-        />
-        <FormInput
-          placeholder="0"
-          label="Narxi"
-          type="number"
-          v-model="formSubcategory.price"
-          :error="$v.price.$error"
-          customClass="!p-2 bg-white"
-          class="w-[30%]"
-        />
+
+      <div class="flex gap-3 items-center mt-6 border-t pt-3">
+      <div class="flex flex-col w-full">
+        <div class="flex gap-3">
+          <FormInput
+              label="Test nomini  kiriting"
+              placeholder="Test nomini  kiriting"
+              v-model="formSubcategory.title"
+              :error="$v.title.$error"
+              customClass="!p-2 bg-white"
+              class="w-full"
+          />
+          <FormInput
+              placeholder="0"
+              label="Narxi"
+              type="number"
+              v-model="formSubcategory.price"
+              :error="$v.price.$error"
+              customClass="!p-2 bg-white"
+              class="w-[30%]"
+          />
+        </div>
+        <div class="flex flex-col mt-2 gap-2">
+          <Textarea v-model="formSubcategory.description" :error="$v.description.$error" label="Textga sharh qo'shish" placeholder="Sharh matnini kiriting"  class="flex-grow-[2] w-full"/>
+          <FormInput
+              label="Test sharhining video qo'llanmasi"
+              placeholder="Video linkini  kiriting"
+              v-model="formSubcategory.link"
+              customClass="!p-2 bg-white"
+              class="w-full"
+          />
+        </div>
+      </div>
         <SButton variant="info" @click="addSubcategory">
           Test qo'shish
         </SButton>
@@ -148,6 +163,8 @@ const openActionModal = ref(false);
 const formSubcategory = reactive({
   ID: "",
   title: "",
+  description:"",
+  link:"",
   price: null,
   testType: "OLD",
   categoryID: route.params.id,
@@ -164,6 +181,7 @@ const ruleSubcategory = computed(() => {
   return {
     title: { required },
     price: { required },
+    description: { required },
   };
 });
 
@@ -230,6 +248,8 @@ function addSubcategory() {
         .finally(() => {
           formSubcategory.title = "";
           formSubcategory.price = "";
+          formSubcategory.description = "";
+          formSubcategory.link = "";
           $v.value.$reset();
           formSubcategory.feedbacks = [
             {
@@ -255,6 +275,8 @@ function addSubcategory() {
         .finally(() => {
           formSubcategory.title = "";
           formSubcategory.price = "";
+          formSubcategory.description = "";
+          formSubcategory.link = "";
           isEditTest.value = false;
           checkFeedback.value = false;
           $v.value.$reset();
@@ -308,11 +330,14 @@ function deleteOption(id) {
 }
 
 function editSubcategoryFunc(item) {
+  console.log(item,"item")
   isEditTest.value = true;
   formSubcategory.ID = item.id;
   formSubcategory.title = item.title;
   formSubcategory.price = item.price;
   formSubcategory.feedbacks = item.feedbacks;
+  formSubcategory.description = item.description;
+  formSubcategory.link = item.link;
 }
 
 onMounted(() => {

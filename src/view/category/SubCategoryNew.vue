@@ -39,24 +39,38 @@
       <div v-if="checkFeedback" class="flex justify-end" @click="feedbackAdd">
         <SButton variant="info"> Feedbackni saqlash </SButton>
       </div>
-      <div class="flex gap-3 items-end mt-6 border-t pt-3">
-        <FormInput
-          label="Test nomini  kiriting"
-          placeholder="Test nomini  kiriting"
-          v-model="formSubcategoryNew.title"
-          customClass="!p-2 bg-white"
-          :error="$vSubcategoryNew.title.$error"
-          class="w-full"
-        />
-        <FormInput
-          placeholder="0"
-          label="Narxi"
-          type="number"
-          v-model="formSubcategoryNew.price"
-          :error="$vSubcategoryNew.price.$error"
-          customClass="!p-2 bg-white"
-          class="w-[30%]"
-        />
+      <div class="flex gap-3 items-center mt-6 border-t pt-3">
+        <div class="flex flex-col w-full">
+         <div class="flex gap-3">
+           <FormInput
+               label="Test nomini  kiriting"
+               placeholder="Test nomini  kiriting"
+               v-model="formSubcategoryNew.title"
+               customClass="!p-2 bg-white"
+               :error="$vSubcategoryNew.title.$error"
+               class="w-full"
+           />
+           <FormInput
+               placeholder="0"
+               label="Narxi"
+               type="number"
+               v-model="formSubcategoryNew.price"
+               :error="$vSubcategoryNew.price.$error"
+               customClass="!p-2 bg-white"
+               class="w-[30%]"
+           />
+         </div>
+          <div class="flex flex-col mt-2 gap-2">
+            <Textarea v-model="formSubcategoryNew.description" :error="$vSubcategoryNew.description.$error" label="Textga sharh qo'shish" placeholder="Sharh matnini kiriting"  class="flex-grow-[2] w-full"/>
+            <FormInput
+                label="Test sharhining video qo'llanmasi"
+                placeholder="Video linkini  kiriting"
+                v-model="formSubcategoryNew.link"
+                customClass="!p-2 bg-white"
+                class="w-full"
+            />
+          </div>
+        </div>
         <SButton variant="info" @click="addNew"> Test qo'shish </SButton>
       </div>
       <table
@@ -161,6 +175,8 @@ const formSubcategoryNew = reactive({
   title: "",
   price: null,
   testType: "NEW",
+  description:"",
+  link:"",
   categoryID: route.params.id,
   feedbacks: [
     {
@@ -176,6 +192,7 @@ const ruleSubcategoryNew = computed(() => {
   return {
     price: { required },
     title: { required },
+    description: { required },
   };
 });
 
@@ -229,6 +246,8 @@ function addNew() {
         .finally(() => {
           formSubcategoryNew.title = "";
           formSubcategoryNew.price = "";
+          formSubcategoryNew.description = "";
+          formSubcategoryNew.link = "";
 
           (formSubcategoryNew.feedbacks = [
             {
@@ -254,6 +273,8 @@ function addNew() {
         .finally(() => {
           formSubcategoryNew.title = "";
           formSubcategoryNew.price = "";
+          formSubcategoryNew.description = "";
+          formSubcategoryNew.link = "";
 
           (formSubcategoryNew.feedbacks = [
             {
@@ -313,6 +334,8 @@ function editSubcategory(item) {
   formSubcategoryNew.title = item.title;
   formSubcategoryNew.price = item.price;
   formSubcategoryNew.feedbacks = item.feedbacks;
+  formSubcategoryNew.description = item.description;
+  formSubcategoryNew.link = item.link;
 }
 
 function feedbackAdd() {
