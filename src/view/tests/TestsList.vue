@@ -152,7 +152,7 @@ async function deleteTest() {
 }
 
 onMounted(() => {
-  categoryStore.fetchSubCategoryAll();
+  categoryStore.fetchSubCategoryAll('ALL');
   toast.info("Test kategoriyalaridan birini tanlang !");
 });
 </script>
