@@ -1,6 +1,6 @@
 <template>
   <div class="transition duration-500">
-    <!-- <pre>{{ form.answerCreateDTOList }}</pre> -->
+<!--     <pre>{{ form }}</pre>-->
     <!-- <pre>{{ arr }}</pre> -->
     <div class="border border-gray-600 py-4 px-5 bg-white">
       <div class="flex items-center gap-4 mt-1 mb-4" v-if="!routeId">
@@ -139,7 +139,7 @@ const form = reactive({
       points: [
         {
           feedbackId: null,
-          value: "",
+          value: 0,
         },
       ],
     },
@@ -151,7 +151,7 @@ const form = reactive({
       points: [
         {
           feedbackId: null,
-          value: "",
+          value: 0,
         },
       ],
     },
@@ -175,7 +175,7 @@ function addNewOption() {
     points: [
       {
         feedbackId: null,
-        value: "",
+        value: 0,
       },
     ],
   };
@@ -245,7 +245,7 @@ function onSubmit() {
         })
         .finally(() => {
           setTimeout(() => {
-            window.location.reload();
+            // window.location.reload();
           }, 2000);
         });
     }
