@@ -133,7 +133,7 @@ const form = reactive({
       points: [
         {
           feedbackId: null,
-          value: "",
+          value: 0,
         },
       ],
     },
@@ -145,7 +145,7 @@ const form = reactive({
       points: [
         {
           feedbackId: null,
-          value: "",
+          value: 0,
         },
       ],
     },
@@ -169,7 +169,7 @@ function addNewOption() {
     points: [
       {
         feedbackId: null,
-        value: "",
+        value: 0,
       },
     ],
   };
