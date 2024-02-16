@@ -144,12 +144,12 @@ const form = reactive({
       points: [
         {
           key: "Shifokor",
-          value: null,
+          value: 0,
           feedbackId: null,
         },
         {
           key: "Dasturchi",
-          value: null,
+          value: 0,
           feedbackId: null,
         },
       ],
@@ -162,12 +162,12 @@ const form = reactive({
       points: [
         {
           key: "Shifokor",
-          value: null,
+          value: 0,
           feedbackId: null,
         },
         {
           key: "Dasturchi",
-          value: null,
+          value: 0,
           feedbackId: null,
         },
       ],
@@ -193,7 +193,7 @@ function addNewOption() {
     points: test.value.map((el) => {
       return {
         key: el.key,
-        value: null,
+        value: 0,
         feedbackId: el.feedbackId,
       };
     }),
@@ -351,7 +351,7 @@ function fetchTestCategory(id) {
       test.value = res.data.map((el) => {
         return {
           key: el.key,
-          value: null,
+          value: 0,
           feedbackId: el.id,
         };
       });
@@ -359,7 +359,7 @@ function fetchTestCategory(id) {
         item.points = res.data.map((el) => {
           return {
             key: el.key,
-            value: null,
+            value: 0,
             feedbackId: el.id,
           };
         });
