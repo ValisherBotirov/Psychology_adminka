@@ -180,7 +180,7 @@ function editTest() {
 }
 
 onMounted(() => {
-  categoryStore.fetchSubCategoryAll();
+  categoryStore.fetchSubCategoryAll('OLD');
   if (routeId) {
     editTest();
   }

@@ -371,7 +371,7 @@ function fetchTestCategory(id) {
 }
 
 onMounted(() => {
-  categoryStore.fetchSubCategoryAll();
+  categoryStore.fetchSubCategoryAll('NEW');
   if (routeId) {
     editTest();
   } else {

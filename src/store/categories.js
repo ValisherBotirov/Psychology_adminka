@@ -30,11 +30,11 @@ export const useCategoryStore = defineStore("categoryStore", {
           });
       });
     },
-    fetchSubCategoryAll() {
+    fetchSubCategoryAll(type) {
       return new Promise((resolve, reject) => {
         this.loading = true;
         axios
-          .get("/test/get/all-simple")
+          .get(`/test/get/all-simple?type=${type}`)
           .then((res) => {
             this.subCategories = res.data;
             resolve(res);
